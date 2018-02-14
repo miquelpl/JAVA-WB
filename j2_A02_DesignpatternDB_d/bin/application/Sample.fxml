@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.141"
+	fx:controller="application.SampleController">
+	<center>
+		<TableView fx:id="tableView" prefHeight="570.0" prefWidth="900.0"
+			BorderPane.alignment="CENTER">
+			<columns>
+				<TableColumn prefWidth="317.0" text="Name">
+					<cellValueFactory>
+						<PropertyValueFactory property="name" /><!-- getName() -->
+					</cellValueFactory>
+				</TableColumn>
+				<TableColumn minWidth="0.0" prefWidth="382.0" text="Beschreibung">
+
+					<cellValueFactory>
+						<PropertyValueFactory property="beschreibung" /><!-- getBeschreibung() -->
+					</cellValueFactory>
+				</TableColumn>
+			</columns>
+		</TableView>
+	</center>
+	<top>
+		<Label prefHeight="45.0" prefWidth="234.0" text="Designpattern"
+			BorderPane.alignment="CENTER">
+			<font>
+				<Font size="18.0" />
+			</font>
+		</Label>
+	</top>
+</BorderPane>
