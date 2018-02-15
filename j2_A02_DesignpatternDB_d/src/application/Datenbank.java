@@ -5,19 +5,20 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
-
-import javafx.collections.ObservableList;
 
 public class Datenbank {
 
 	public Connection con = null;
 
 	public Datenbank() {
+		
+		connect();
 
 	}
 
-	public void connect() {
+	private void connect() {
 		try {
 			con = DriverManager.getConnection("jdbc:mysql://localhost/java2", "root", "");
 		} catch (SQLException e) {
@@ -45,7 +46,9 @@ public class Datenbank {
 		}
 	}
 
-	public void select(List<Designpattern> dList) {
+	public List<Designpattern> select() {
+		List<Designpattern> dList = new ArrayList<>();
+
 		try {
 	        Statement selectAllStatement = con.createStatement();
 	        ResultSet rs = selectAllStatement.executeQuery("SELECT * FROM designpattern");
@@ -56,6 +59,7 @@ public class Datenbank {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return(dList);
 	}
 
 
