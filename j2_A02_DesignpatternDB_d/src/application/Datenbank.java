@@ -8,14 +8,23 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Datenbank {
+public final class Datenbank {
+
+	private static Datenbank instance = null;
 
 	public Connection con = null;
 
-	public Datenbank() {
+	private Datenbank() {
 		
 		connect();
 
+	}
+
+	public synchronized static Datenbank getInstance() {
+		if (instance == null) {
+			instance = new Datenbank();
+		}
+		return instance;
 	}
 
 	private void connect() {

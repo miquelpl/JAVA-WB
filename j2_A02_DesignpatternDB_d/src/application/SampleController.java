@@ -21,6 +21,7 @@ public class SampleController implements Initializable{
 
 	ObservableList<Designpattern> dList = FXCollections.observableArrayList();
 	Connection con = null;
+	Datenbank meinDB = Datenbank.getInstance();
 
 	@FXML private TableView<Designpattern> tableView;
 
@@ -33,51 +34,22 @@ public class SampleController implements Initializable{
 	@FXML
 	private void save(ActionEvent event) {
 		dList.add(new Designpattern(nameTextField.getText(), beschreibungTextField.getText()));
-
-		try {
-	        Statement insertStatement = con.createStatement();
-	        int n = insertStatement.executeUpdate("INSERT INTO designpattern (name, beschreibung) VALUES ('"+
-	        		nameTextField.getText()+"', '"+beschreibungTextField.getText()+"')");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		meinDB.insert(nameTextField.getText(), beschreibungTextField.getText());
 	}
 	
 	@FXML
 	private void delete(ActionEvent event) {
-		try {
-	        Statement insertStatement = con.createStatement();
-	        int n = insertStatement.executeUpdate("DELETE FROM designpattern WHERE name='"+tableView.getSelectionModel().getSelectedItem().getName()+"'");
-//	        System.out.printf("%s borrados: %d\n", "DELETE FROM designpattern WHERE name='"+tableView.getSelectionModel().getSelectedItem().getName()+"'", n);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
+		meinDB.delete(tableView.getSelectionModel().getSelectedItem().getName());
 		dList.remove(tableView.getSelectionModel().getSelectedIndex());
 	}
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		//ObservableList<Designpattern> dList = FXCollections.observableArrayList(NORMALE_COLLECTION); z.B. ArrayList
-		
-		try {
-			con = DriverManager.getConnection("jdbc:mysql://localhost/java2", "root", "");
-	        Statement selectAllStatement = con.createStatement();
-	        ResultSet rs = selectAllStatement.executeQuery("SELECT * FROM designpattern");
-
-	        while (rs.next()) {
-	    		dList.add(new Designpattern(rs.getString("name"), rs.getString("beschreibung")));
-	        }
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
+		dList.addAll(meinDB.select());
 		tableView.setItems(dList);
-
 		tableView.getSelectionModel().selectedItemProperty().addListener((a,b,c)->{
 			System.out.println(c.getName());
 		});
-		
 	}
 	
 }
