@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -69,6 +70,8 @@ public class AdressController implements Initializable {
 		telefon.setCellValueFactory(new PropertyValueFactory<>("telefon"));
 		mobil.setCellValueFactory(new PropertyValueFactory<>("mobil"));
 		email.setCellValueFactory(new PropertyValueFactory<>("email"));
+		telefon.setCellFactory(TextFieldTableCell.forTableColumn());
+		mobil.setCellFactory(TextFieldTableCell.forTableColumn());
 		email.setCellFactory(TextFieldTableCell.forTableColumn());
 	}
 
@@ -121,6 +124,12 @@ public class AdressController implements Initializable {
 		if(personDAO.deletePerson(tableView.getSelectionModel().getSelectedItem().getId())) {
 			dList.remove(tableView.getSelectionModel().getSelectedIndex());
 		}
+	}
+
+	@FXML public void editCommit(CellEditEvent<Person, String> c) {
+		MySQLPersonDAO personDAO = new MySQLPersonDAO();
+		boolean updateOk =personDAO.updatePerson(c.getRowValue().getId(), c.getTableColumn().getId(), c.getNewValue());
+		System.out.println(c.getNewValue()+" "+c.getTableColumn().getId()+" "+c.getRowValue().getId());
 	}
 
 }

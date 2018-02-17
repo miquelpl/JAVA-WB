@@ -97,8 +97,16 @@ public class MySQLPersonDAO implements PersonDAO{
 
 	@Override
 	public boolean updatePerson(int id, String fieldName, String newValue) {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+	        PreparedStatement updateStatement = dbconnect.getConnection().prepareStatement("UPDATE adressen SET "+fieldName+"='"+newValue+"' WHERE id=?");
+	        updateStatement.setInt(1, id);
+	        int u = updateStatement.executeUpdate();
+	        System.out.println("Geändert: "+u);
+	        return(u>0);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	public static void main(String[] args) {

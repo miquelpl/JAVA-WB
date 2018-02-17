@@ -28,9 +28,9 @@
                       <TableColumn fx:id="plz" prefWidth="50.0" text="PLZ" />
                       <TableColumn fx:id="ort" prefWidth="100.0" text="Ort" />
                       <TableColumn fx:id="strasse" prefWidth="150.0" text="Straße" />
-                      <TableColumn fx:id="telefon" editable="true" prefWidth="100.0" text="Telefon" />
-                      <TableColumn fx:id="mobil" editable="true" prefWidth="100.0" text="Mobil" />
-                      <TableColumn fx:id="email" editable="true" prefWidth="200.0" text="E-Mail" />
+                      <TableColumn fx:id="telefon" editable="true" onEditCommit="#editCommit" prefWidth="100.0" text="Telefon" />
+                      <TableColumn fx:id="mobil" editable="true" onEditCommit="#editCommit" prefWidth="100.0" text="Mobil" />
+                      <TableColumn fx:id="email" editable="true" onEditCommit="#editCommit" prefWidth="200.0" text="E-Mail" />
                     </columns>
                      <contextMenu>
                         <ContextMenu fx:id="contextMenu" onAction="#deletePerson">
