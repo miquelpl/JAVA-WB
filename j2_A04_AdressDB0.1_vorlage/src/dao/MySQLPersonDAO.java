@@ -66,7 +66,7 @@ public class MySQLPersonDAO implements PersonDAO{
 					+person.getMobil()+"', '"
 					+person.getEmail()+"')";
 
-			System.out.println(dml);
+			//System.out.println(dml);
 			
 			int n = insertStatement.executeUpdate(dml, Statement.RETURN_GENERATED_KEYS);
 			ResultSet rs = insertStatement.getGeneratedKeys();
@@ -83,8 +83,16 @@ public class MySQLPersonDAO implements PersonDAO{
 
 	@Override
 	public boolean deletePerson(int id) {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+	        PreparedStatement updateStatement = dbconnect.getConnection().prepareStatement("DELETE FROM adressen WHERE id=?");
+	        updateStatement.setInt(1, id);
+	        int u = updateStatement.executeUpdate();
+	        System.out.println("Gelöscht: "+u);
+	        return(u>0);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	@Override

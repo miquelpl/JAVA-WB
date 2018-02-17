@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.Cursor?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -17,7 +18,7 @@
    <center>
       <TabPane BorderPane.alignment="CENTER">
          <tabs>
-            <Tab text="Übersicht">
+            <Tab fx:id="uebersichtTab" text="Übersicht">
                <content>
                   <TableView fx:id="tableView" editable="true">
                     <columns>
@@ -31,14 +32,21 @@
                       <TableColumn fx:id="mobil" editable="true" prefWidth="100.0" text="Mobil" />
                       <TableColumn fx:id="email" editable="true" prefWidth="200.0" text="E-Mail" />
                     </columns>
+                     <contextMenu>
+                        <ContextMenu fx:id="contextMenu" onAction="#deletePerson">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="Delete" />
+                          </items>
+                        </ContextMenu>
+                     </contextMenu>
                   </TableView>
                </content>
             </Tab>
-            <Tab text="Neuer Datensatz">
+            <Tab fx:id="neuerTab" onSelectionChanged="#onSelection" text="Neuer Datensatz">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Group layoutX="111.0" layoutY="72.0">
+                        <Group layoutX="111.0" layoutY="80.0">
                            <children>
                               <Label layoutX="10.0" layoutY="4.0" text="Vorname" />
                               <Label layoutX="35.0" layoutY="91.0" text="Ort" />
@@ -56,7 +64,9 @@
                               <TextField fx:id="nd_telefon" layoutX="425.0" />
                               <TextField fx:id="nd_mobil" layoutX="425.0" layoutY="29.0" />
                               <TextField fx:id="nd_email" layoutX="425.0" layoutY="58.0" />
-                              <Button fx:id="speichern" layoutX="474.0" layoutY="116.0" mnemonicParsing="false" onAction="#save" text="Speichern" textAlignment="CENTER" />
+                              <Button fx:id="speichern" layoutX="427.0" layoutY="116.0" mnemonicParsing="false" onAction="#save" text="Speichern" textAlignment="CENTER" />
+		                      <Label fx:id="message" layoutX="474.0" layoutY="160.0" text="Datensatz wird gespeichert!" visible="false" />
+                              <Button fx:id="neuerSatzButton" layoutX="500.0" layoutY="116.0" mnemonicParsing="false" onAction="#neu" text="Neuer Satz" textAlignment="CENTER" />
                            </children>
                            <effect>
                               <Blend />

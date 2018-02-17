@@ -13,29 +13,27 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.stage.Popup;
 import model.Person;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
+import javafx.event.Event;
+import javafx.scene.control.ContextMenu;
 
 public class AdressController implements Initializable {
 	
 	ObservableList<Person> dList = FXCollections.observableArrayList();
 
 	@FXML private TableView<Person> tableView;
-	@FXML	private TableColumn<Person, Integer> id;
-	@FXML	private TableColumn<Person, String> vorname;
-	@FXML	private TableColumn<Person, String> nachname;
-	@FXML	private TableColumn<Person, String> plz;
-	@FXML	private TableColumn<Person, String> ort;
-	@FXML	private TableColumn<Person, String> strasse;
-	@FXML	private TableColumn<Person, String> telefon;
-	@FXML	private TableColumn<Person, String> mobil;
-	@FXML	private TableColumn<Person, String> email;
+	@FXML private TableColumn<Person, Integer> id;
+	@FXML private TableColumn<Person, String> vorname;
+	@FXML private TableColumn<Person, String> nachname;
+	@FXML private TableColumn<Person, String> plz;
+	@FXML private TableColumn<Person, String> ort;
+	@FXML private TableColumn<Person, String> strasse;
+	@FXML private TableColumn<Person, String> telefon;
+	@FXML private TableColumn<Person, String> mobil;
+	@FXML private TableColumn<Person, String> email;
 
 	@FXML TextField nd_vorname;
 	@FXML TextField nd_plz;
@@ -46,6 +44,11 @@ public class AdressController implements Initializable {
 	@FXML TextField nd_mobil;
 	@FXML TextField nd_email;
 	@FXML Button speichern;
+	@FXML Label message;
+
+	@FXML Button neuerSatzButton;
+
+	@FXML ContextMenu contextMenu;
 
 	public void initialize(URL location, ResourceBundle resources) {
 		MySQLPersonDAO personDAO = new MySQLPersonDAO(); 
@@ -85,10 +88,39 @@ public class AdressController implements Initializable {
 		if(personDAO.savePerson(p)) {
 			p.setId(personDAO.getLastInsertId());
 			dList.add(p);
-		    Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setContentText("Datensatz gespeichert!");
-			alert.show();
+			message.setVisible(true);
+			neuerSatzButton.setDisable(true);
 		}
-		
 	}
+
+	// NeuerSatz Tab selected
+	@FXML public void onSelection(Event event) {
+		initilizeNeuerSatzTab();
+	}
+
+	// Neuer Satz Button onClick
+	@FXML public void neu(ActionEvent event) {
+		initilizeNeuerSatzTab();
+	}
+
+	private void initilizeNeuerSatzTab() {
+		message.setVisible(false);
+		nd_vorname.setText(null);
+		nd_plz.setText(null);
+		nd_nachname.setText(null);
+		nd_strasse.setText(null);
+		nd_ort.setText(null);
+		nd_telefon.setText(null);
+		nd_mobil.setText(null);
+		nd_email.setText(null);
+		neuerSatzButton.setDisable(false);
+	}
+
+	@FXML public void deletePerson(ActionEvent event) {
+		MySQLPersonDAO personDAO = new MySQLPersonDAO();
+		if(personDAO.deletePerson(tableView.getSelectionModel().getSelectedItem().getId())) {
+			dList.remove(tableView.getSelectionModel().getSelectedIndex());
+		}
+	}
+
 }
