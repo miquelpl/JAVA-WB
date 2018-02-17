@@ -13,9 +13,14 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.stage.Popup;
 import model.Person;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 
 public class AdressController implements Initializable {
 	
@@ -80,6 +85,9 @@ public class AdressController implements Initializable {
 		if(personDAO.savePerson(p)) {
 			p.setId(personDAO.getLastInsertId());
 			dList.add(p);
+		    Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setContentText("Datensatz gespeichert!");
+			alert.show();
 		}
 		
 	}
