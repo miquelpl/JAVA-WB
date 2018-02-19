@@ -19,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
 
 public class AdressController implements Initializable {
@@ -55,11 +56,11 @@ public class AdressController implements Initializable {
 		MySQLPersonDAO personDAO = new MySQLPersonDAO(); 
 		dList.addAll(personDAO.findAllPersons());
 		tableView.setItems(dList);
-		tableView.getSelectionModel().selectedItemProperty().addListener((a,b,c)->{
-			System.out.println(a.getValue());
-			System.out.println(c.getNachname());
-			System.out.println(c.getVorname());
-		});
+//		tableView.getSelectionModel().selectedItemProperty().addListener((a,b,c)->{
+//			System.out.println(a.getValue());
+//			System.out.println(c.getNachname());
+//			System.out.println(c.getVorname());
+//		});
 		
 		id.setCellValueFactory(new PropertyValueFactory<>("id"));
 		vorname.setCellValueFactory(new PropertyValueFactory<>("vorname"));
@@ -70,9 +71,17 @@ public class AdressController implements Initializable {
 		telefon.setCellValueFactory(new PropertyValueFactory<>("telefon"));
 		mobil.setCellValueFactory(new PropertyValueFactory<>("mobil"));
 		email.setCellValueFactory(new PropertyValueFactory<>("email"));
+
 		telefon.setCellFactory(TextFieldTableCell.forTableColumn());
 		mobil.setCellFactory(TextFieldTableCell.forTableColumn());
 		email.setCellFactory(TextFieldTableCell.forTableColumn());
+		
+
+		// Zwei andere Möglichkeiten
+//		strasse.setCellFactory(TextFieldTableCell.forTableColumn());
+//		strasse.setOnEditCommit(new MyCellEvent());
+//		strasse.setOnEditCommit(e->{});
+//		strasse.setOnEditCommit(this::myHandle);
 	}
 
 	@FXML private void save(ActionEvent event) {
@@ -129,7 +138,23 @@ public class AdressController implements Initializable {
 	@FXML public void editCommit(CellEditEvent<Person, String> c) {
 		MySQLPersonDAO personDAO = new MySQLPersonDAO();
 		boolean updateOk =personDAO.updatePerson(c.getRowValue().getId(), c.getTableColumn().getId(), c.getNewValue());
-		System.out.println(c.getNewValue()+" "+c.getTableColumn().getId()+" "+c.getRowValue().getId());
+//		if(updateOk) {
+//			System.out.println("UDATE OK: "+c.getNewValue()+" "+c.getTableColumn().getId()+" "+c.getRowValue().getId());
+//		}
 	}
+	
+//	public void myHandle(CellEditEvent<Person, String> event) {
+//		// TODO Auto-generated method stub
+//	}
+//	
+//	class MyCellEvent implements EventHandler<CellEditEvent<Person, String>>{
+//
+//		@Override
+//		public void handle(CellEditEvent<Person, String> event) {
+//			// TODO Auto-generated method stub
+//			
+//		}
+//		
+//	}
 
 }
