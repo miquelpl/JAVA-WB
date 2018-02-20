@@ -14,9 +14,15 @@ public class MySQLPersonDAO implements PersonDAO{
 	private DBConnect dbconnect;
 
 	private int lastInsertId = 0;
+	
+	private Person neuePerson = null;
+
+	public Person getNeuePerson() {
+		return this.neuePerson;
+	}
 
 	public int getLastInsertId() {
-		return lastInsertId;
+		return this.lastInsertId;
 	}
 
 	public MySQLPersonDAO() {
@@ -25,9 +31,93 @@ public class MySQLPersonDAO implements PersonDAO{
 
 	@Override
 	public List<Person> findAllPersons() {
+		return selectFilteredPerson("1", "1");
+	}
+
+	@Override
+	public boolean savePerson(Person person) {
+
+		neuePerson = new Person();
+		
+		try {
+	        Statement insertStatement = dbconnect.getConnection().createStatement();
+
+	        String dml = "INSERT INTO adressen (vorname, nachname, plz, ort, strasse, telefon, mobil, email) VALUES ('"
+					+person.getVorname()+"', '"
+					+person.getNachname()+"', '"
+					+person.getPlz()+"', '"
+					+person.getOrt()+"', '"
+					+person.getStrasse()+"', '"
+					+person.getTelefon()+"', '"
+					+person.getMobil()+"', '"
+					+person.getEmail()+"')";
+
+			//System.out.println(dml);
+			
+			int n = insertStatement.executeUpdate(dml, Statement.RETURN_GENERATED_KEYS);
+			ResultSet rs = insertStatement.getGeneratedKeys();
+			if (rs.next()) {
+				lastInsertId = rs.getInt(1); 
+				person.setId(lastInsertId);
+				neuePerson = person;
+				neuePerson.setId(lastInsertId);
+			}
+
+	        return(n>0);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public boolean deletePerson(int id) {
+		try {
+	        PreparedStatement updateStatement = dbconnect.getConnection().prepareStatement("DELETE FROM adressen WHERE id=?");
+	        updateStatement.setInt(1, id);
+	        int u = updateStatement.executeUpdate();
+	        System.out.println("Gelï¿½scht: "+u);
+	        return(u>0);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public boolean updatePerson(int id, String fieldName, String newValue) {
+		try {
+	        PreparedStatement updateStatement = dbconnect.getConnection().prepareStatement("UPDATE adressen SET "+fieldName+"='"+newValue+"' WHERE id=?");
+	        updateStatement.setInt(1, id);
+	        int u = updateStatement.executeUpdate();
+	        System.out.println("Geï¿½ndert: "+u);
+	        return(u>0);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public List<Person> selectFilteredPerson(String fieldName, String value) {
 
 		List<Person> personList = new ArrayList<>();
-		try (PreparedStatement ps = dbconnect.getConnection().prepareStatement("SELECT * FROM adressen")){
+		String whereFeld = null;
+		String whereValue = null;
+
+		if(value==null||value=="") {
+			whereFeld = "1";
+			whereValue = "1";
+		}
+		else {
+			whereFeld = fieldName;
+			whereValue = value;
+		}
+
+		String dml = "SELECT * FROM adressen WHERE "+whereFeld+"=?";
+        System.out.println(dml);
+		try (PreparedStatement ps = dbconnect.getConnection().prepareStatement(dml)){
+			ps.setString(1, whereValue);
 			
 			ResultSet rs = ps.executeQuery();
 
@@ -48,65 +138,6 @@ public class MySQLPersonDAO implements PersonDAO{
 			e.printStackTrace();
 		}
 		return personList;
-	}
-
-	@Override
-	public boolean savePerson(Person person) {
-
-		try {
-	        Statement insertStatement = dbconnect.getConnection().createStatement();
-
-			String dml = "INSERT INTO adressen (vorname, nachname, plz, ort, strasse, telefon, mobil, email) VALUES ('"
-					+person.getVorname()+"', '"
-					+person.getNachname()+"', '"
-					+person.getPlz()+"', '"
-					+person.getOrt()+"', '"
-					+person.getStrasse()+"', '"
-					+person.getTelefon()+"', '"
-					+person.getMobil()+"', '"
-					+person.getEmail()+"')";
-
-			//System.out.println(dml);
-			
-			int n = insertStatement.executeUpdate(dml, Statement.RETURN_GENERATED_KEYS);
-			ResultSet rs = insertStatement.getGeneratedKeys();
-			if (rs.next()) {
-				this.lastInsertId = rs.getInt(1); 
-			}
-
-	        return(n>0);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	@Override
-	public boolean deletePerson(int id) {
-		try {
-	        PreparedStatement updateStatement = dbconnect.getConnection().prepareStatement("DELETE FROM adressen WHERE id=?");
-	        updateStatement.setInt(1, id);
-	        int u = updateStatement.executeUpdate();
-	        System.out.println("Gelöscht: "+u);
-	        return(u>0);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	@Override
-	public boolean updatePerson(int id, String fieldName, String newValue) {
-		try {
-	        PreparedStatement updateStatement = dbconnect.getConnection().prepareStatement("UPDATE adressen SET "+fieldName+"='"+newValue+"' WHERE id=?");
-	        updateStatement.setInt(1, id);
-	        int u = updateStatement.executeUpdate();
-	        System.out.println("Geändert: "+u);
-	        return(u>0);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
 	}
 
 	public static void main(String[] args) {
