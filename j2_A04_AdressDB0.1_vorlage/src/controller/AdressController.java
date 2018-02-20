@@ -19,8 +19,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.ComboBox;
 
 public class AdressController implements Initializable {
 	
@@ -47,20 +47,21 @@ public class AdressController implements Initializable {
 	@FXML TextField nd_email;
 	@FXML Button speichern;
 	@FXML Label message;
-
 	@FXML Button neuerSatzButton;
-
 	@FXML ContextMenu contextMenu;
-
+	@FXML Label notificationMessage;
+	@FXML ComboBox<String> filterList;
+	@FXML TextField valueFilter;
+	@FXML Button filterButton;
+	
 	public void initialize(URL location, ResourceBundle resources) {
 		MySQLPersonDAO personDAO = new MySQLPersonDAO(); 
 		dList.addAll(personDAO.findAllPersons());
+		//tableView.setItems(FXCollections.observableArrayList(personDAO.findAllPersons()));
 		tableView.setItems(dList);
-//		tableView.getSelectionModel().selectedItemProperty().addListener((a,b,c)->{
-//			System.out.println(a.getValue());
-//			System.out.println(c.getNachname());
-//			System.out.println(c.getVorname());
-//		});
+		tableView.getSelectionModel().selectedItemProperty().addListener((a,b,c)->{
+			notificationMessage.setText(a.getValue()+":"+c.getNachname()+":"+c.getVorname());
+		});
 		
 		id.setCellValueFactory(new PropertyValueFactory<>("id"));
 		vorname.setCellValueFactory(new PropertyValueFactory<>("vorname"));
@@ -75,13 +76,8 @@ public class AdressController implements Initializable {
 		telefon.setCellFactory(TextFieldTableCell.forTableColumn());
 		mobil.setCellFactory(TextFieldTableCell.forTableColumn());
 		email.setCellFactory(TextFieldTableCell.forTableColumn());
-		
-
-		// Zwei andere Mˆglichkeiten
-//		strasse.setCellFactory(TextFieldTableCell.forTableColumn());
-//		strasse.setOnEditCommit(new MyCellEvent());
-//		strasse.setOnEditCommit(e->{});
-//		strasse.setOnEditCommit(this::myHandle);
+//		filterList.setValue("Nachname");
+//		filterList.setItems(FXCollections.observableArrayList("Vorname", "Nachname", "PLZ", "Ort", "Straﬂe", "Telefon", "Mobil", "E-Mail"));
 	}
 
 	@FXML private void save(ActionEvent event) {
@@ -98,9 +94,11 @@ public class AdressController implements Initializable {
 		p.setEmail(nd_email.getText());
 		MySQLPersonDAO personDAO = new MySQLPersonDAO();
 		if(personDAO.savePerson(p)) {
-			p.setId(personDAO.getLastInsertId());
-			dList.add(p);
+//			p.setId(personDAO.getLastInsertId());
+//			dList.add(p);
+			dList.add(personDAO.getNeuePerson());
 			message.setVisible(true);
+			notificationMessage.setText("Datensatz wird gespeichert!");
 			neuerSatzButton.setDisable(true);
 		}
 	}
@@ -137,24 +135,22 @@ public class AdressController implements Initializable {
 
 	@FXML public void editCommit(CellEditEvent<Person, String> c) {
 		MySQLPersonDAO personDAO = new MySQLPersonDAO();
-		boolean updateOk =personDAO.updatePerson(c.getRowValue().getId(), c.getTableColumn().getId(), c.getNewValue());
-//		if(updateOk) {
-//			System.out.println("UDATE OK: "+c.getNewValue()+" "+c.getTableColumn().getId()+" "+c.getRowValue().getId());
-//		}
+		boolean updateOk = personDAO.updatePerson(c.getRowValue().getId(), c.getTableColumn().getId(), c.getNewValue());
+		if(updateOk) {
+			notificationMessage.setText("UPDATE OK: "+c.getNewValue()+" "+c.getTableColumn().getId()+" "+c.getRowValue().getId());
+		}
+	}
+
+	@FXML public void filterButtonOnAction(ActionEvent event) {
+		notificationMessage.setText("filterButtonOnAction: "+filterList.getValue()+":"+valueFilter.getText());
+		MySQLPersonDAO personDAO = new MySQLPersonDAO();
+		ObservableList<Person> lList = FXCollections.observableArrayList();
+		lList.addAll(personDAO.selectFilteredPerson(filterList.getValue(), valueFilter.getText()));
+		tableView.setItems(lList);
+
+//		tableView.getItems().filtered(predicate)
+//		System.out.println(tableView.getItems().filtered(predicate));
+		
 	}
 	
-//	public void myHandle(CellEditEvent<Person, String> event) {
-//		// TODO Auto-generated method stub
-//	}
-//	
-//	class MyCellEvent implements EventHandler<CellEditEvent<Person, String>>{
-//
-//		@Override
-//		public void handle(CellEditEvent<Person, String> event) {
-//			// TODO Auto-generated method stub
-//			
-//		}
-//		
-//	}
-
 }
