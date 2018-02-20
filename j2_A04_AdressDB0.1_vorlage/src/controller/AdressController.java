@@ -128,9 +128,7 @@ public class AdressController implements Initializable {
 		p.setEmail(nd_email.getText());
 		MySQLPersonDAO personDAO = new MySQLPersonDAO();
 		if(personDAO.savePerson(p)) {
-//			p.setId(personDAO.getLastInsertId());
 			dList.add(p);
-//			dList.add(personDAO.getNeuePerson());
 			message.setVisible(true);
 			notificationMessage.setText("Datensatz wird gespeichert!");
 			neuerSatzButton.setDisable(true);
