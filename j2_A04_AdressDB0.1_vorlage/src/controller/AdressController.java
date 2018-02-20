@@ -6,6 +6,8 @@ import java.util.ResourceBundle;
 import dao.MySQLPersonDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -76,8 +78,40 @@ public class AdressController implements Initializable {
 		telefon.setCellFactory(TextFieldTableCell.forTableColumn());
 		mobil.setCellFactory(TextFieldTableCell.forTableColumn());
 		email.setCellFactory(TextFieldTableCell.forTableColumn());
-//		filterList.setValue("Nachname");
-//		filterList.setItems(FXCollections.observableArrayList("Vorname", "Nachname", "PLZ", "Ort", "Straße", "Telefon", "Mobil", "E-Mail"));
+		filterList.setValue("Nachname");
+		filterList.setItems(FXCollections.observableArrayList("Vorname", "Nachname", "PLZ", "Ort", "Straï¿½e", "Telefon", "Mobil", "E-Mail"));
+
+		FilteredList<Person> filteredData = new FilteredList<>(dList, p -> true);
+
+		valueFilter.textProperty().addListener((observable, oldValue, newValue) -> {
+			filteredData.setPredicate(person -> {
+				// If filter text is empty, display all persons.
+				if (newValue == null || newValue.isEmpty()) {
+					return true;
+				}
+				
+				// Compare first name and last name of every person with filter text.
+				String lowerCaseFilter = newValue.toLowerCase();
+				
+				if (person.getVorname().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+					return true; // Filter matches first name.
+				} else if (person.getNachname().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+					return true; // Filter matches last name.
+				}
+				return false; // Does not match.
+			});
+		});
+
+		// 3. Wrap the FilteredList in a SortedList. 
+		SortedList<Person> sortedData = new SortedList<>(filteredData);
+		
+		// 4. Bind the SortedList comparator to the TableView comparator.
+		// 	  Otherwise, sorting the TableView would have no effect.
+		sortedData.comparatorProperty().bind(tableView.comparatorProperty());
+		
+		// 5. Add sorted (and filtered) data to the table.
+		tableView.setItems(sortedData);
+
 	}
 
 	@FXML private void save(ActionEvent event) {
@@ -95,8 +129,8 @@ public class AdressController implements Initializable {
 		MySQLPersonDAO personDAO = new MySQLPersonDAO();
 		if(personDAO.savePerson(p)) {
 //			p.setId(personDAO.getLastInsertId());
-//			dList.add(p);
-			dList.add(personDAO.getNeuePerson());
+			dList.add(p);
+//			dList.add(personDAO.getNeuePerson());
 			message.setVisible(true);
 			notificationMessage.setText("Datensatz wird gespeichert!");
 			neuerSatzButton.setDisable(true);
@@ -143,11 +177,43 @@ public class AdressController implements Initializable {
 
 	@FXML public void filterButtonOnAction(ActionEvent event) {
 		notificationMessage.setText("filterButtonOnAction: "+filterList.getValue()+":"+valueFilter.getText());
-		MySQLPersonDAO personDAO = new MySQLPersonDAO();
-		ObservableList<Person> lList = FXCollections.observableArrayList();
-		lList.addAll(personDAO.selectFilteredPerson(filterList.getValue(), valueFilter.getText()));
-		tableView.setItems(lList);
+//		MySQLPersonDAO personDAO = new MySQLPersonDAO();
+//		ObservableList<Person> lList = FXCollections.observableArrayList();
+//		lList.addAll(personDAO.selectFilteredPerson(filterList.getValue(), valueFilter.getText()));
+//		tableView.setItems(lList);
 
+		FilteredList<Person> filteredData = new FilteredList<>(dList, p -> true);
+
+		valueFilter.textProperty().addListener((observable, oldValue, newValue) -> {
+			filteredData.setPredicate(person -> {
+				// If filter text is empty, display all persons.
+				if (newValue == null || newValue.isEmpty()) {
+					return true;
+				}
+				
+				// Compare first name and last name of every person with filter text.
+				String lowerCaseFilter = newValue.toLowerCase();
+				
+				if (person.getVorname().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+					return true; // Filter matches first name.
+				} else if (person.getNachname().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+					return true; // Filter matches last name.
+				}
+				return false; // Does not match.
+			});
+		});
+
+		// 3. Wrap the FilteredList in a SortedList. 
+		SortedList<Person> sortedData = new SortedList<>(filteredData);
+		
+		// 4. Bind the SortedList comparator to the TableView comparator.
+		// 	  Otherwise, sorting the TableView would have no effect.
+		sortedData.comparatorProperty().bind(tableView.comparatorProperty());
+		
+		// 5. Add sorted (and filtered) data to the table.
+		tableView.setItems(sortedData);
+		
+		
 //		tableView.getItems().filtered(predicate)
 //		System.out.println(tableView.getItems().filtered(predicate));
 		
