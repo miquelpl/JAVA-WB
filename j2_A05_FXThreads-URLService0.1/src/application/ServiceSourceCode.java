@@ -15,12 +15,10 @@ public class ServiceSourceCode extends Service<String>{
 		this.adress = adress;
 	}
 
-	@Override
-	protected Task<String> createTask() {
+	@Override protected Task<String> createTask() {
 		
 		Task<String> task = new Task<String>() {
-			@Override
-			protected String call() throws Exception, IOException {
+			@Override protected String call() throws Exception, IOException {
 				URL url = new URL(adress);
 				StringBuilder sb = new StringBuilder();
 				try(Scanner sc = new Scanner(url.openStream())) {
@@ -30,7 +28,6 @@ public class ServiceSourceCode extends Service<String>{
 						sb.append(sc.nextLine()+"\n");
 						updateProgress(i++, MAX);
 					}
-//					updateValue(sb.toString());
 				} 
 				
 				return sb.toString();

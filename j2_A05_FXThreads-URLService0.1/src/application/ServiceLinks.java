@@ -5,13 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.scene.control.Hyperlink;
 
-public class ServiceLinks extends Service<List<String>>{
+public class ServiceLinks extends Service<List<Hyperlink>>{
 
 	private static final String REGEX_HYPERLINK ="\\b(https?)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
 	
@@ -21,22 +19,22 @@ public class ServiceLinks extends Service<List<String>>{
 		this.html = html;
 	}
 
-	@Override protected Task<List<String>> createTask() {
-		Task<List<String>> task = new Task<List<String>>() {
-			@Override protected List<String> call() throws Exception, IOException {
+	@Override protected Task<List<Hyperlink>> createTask() {
+		Task<List<Hyperlink>> task = new Task<List<Hyperlink>>() {
+			@Override protected List<Hyperlink> call() throws Exception, IOException {
 
-				ObservableList<String> names = FXCollections.observableArrayList();
-//				List<String> result = new ArrayList<>();
+				List<Hyperlink> result = new ArrayList<>();
 				Pattern pattern = Pattern.compile(REGEX_HYPERLINK, Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 				Matcher matcher = pattern.matcher(html);
 				while (matcher.find()) {
-					names.add(matcher.group() );
-					updateValue(names);
+					Hyperlink temporalLink = new Hyperlink(matcher.group());
+					result.add(temporalLink);
+					updateValue(result);
 
 				//System.out.println(matcher.group() );
 				}
-				System.out.println(names);
-				return(names);
+				//System.out.println(result);
+				return(result);
 			}
 		};
 		return task;
