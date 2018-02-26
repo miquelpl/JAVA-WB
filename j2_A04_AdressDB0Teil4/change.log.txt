@@ -1,0 +1,6 @@
+-findAll
+-TableView
+-insert, formular
+-delete Datensatz
+-update
+-Benutzermeldung
