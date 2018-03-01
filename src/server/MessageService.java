@@ -2,7 +2,6 @@ package server;
 
 import java.io.ObjectInputStream;
 import java.net.Socket;
-import java.time.LocalTime;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,13 +17,11 @@ public class MessageService extends Service<MessageObject>{
 
 	@Override
 	protected Task<MessageObject> createTask() {
+		log.info(this.getClass().getName()+": createTask()");
 		return new Task<MessageObject>(){
-			
-			@Override
-			protected MessageObject call() throws Exception {
+			@Override protected MessageObject call() throws Exception {
 				log.info(this.getClass().getName()+": call()");
-				updateMessage("MessageService: call");
-				// ObjectInputstream erzeugen, Nachricht lesen, zurückgeben
+				//updateMessage("MessageService: call"); // ObjectInputstream erzeugen, Nachricht lesen, zurückgeben
 				ObjectInputStream in;
 				MessageObject text = null;
 				try {
@@ -34,14 +31,13 @@ public class MessageService extends Service<MessageObject>{
 					log.error(this.getClass().getName()+": method go() Fehler: "+ e.fillInStackTrace());					//e.printStackTrace();
 				}
 			
-//				String text = "vamos por el principio";
-				//hier...
 				return(text);
 			}
 		};
 	}
 
 	public void setClientSocket(Socket clientSocket) {
+		log.info(this.getClass().getName()+": "+clientSocket.toString());
 		this.clientSocket = clientSocket;
 	}
 }

@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import server.ServiceServer;
 import client.Client;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -42,8 +43,7 @@ public class MessengerController implements Initializable{
 	private Server server;
 	private MessageService messageService;
 	private ObservableList<MessageObject> messageList = FXCollections.observableArrayList();
-	private Thread t1;
-	private Task<Long> task1;
+	private ServiceServer serviceServer;
 
 	// Server und Client erzeugen	// Listener für die empfangene Nachricht	// Nachricht an die Liste hängen
 	@Override
@@ -53,22 +53,30 @@ public class MessengerController implements Initializable{
 			server = new Server();
 			messageService = server.getService();
 			messageTableView.setItems(messageList);
-
+			serviceServer = new ServiceServer();
+			
 			messageService.valueProperty().addListener( (a, oldValue, newValue)->{
 				log.info(this.getClass().getName()+": messageService.valueProperty().addListener");
-				newValue.setName(nameTextField.getText());
-				messageList.add(newValue);
+				if(newValue != null) {
+					newValue.setName(nameTextField.getText());
+					messageList.add(newValue);
+				}
 			} );
 			
-			messageService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			serviceServer.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 				@Override public void handle(WorkerStateEvent event) {
-					log.info(this.getClass().getName()+": messageService.setOnSucceeded");
-					task1 = createTask1();
-					t1 = new Thread(task1);
-					t1.start();
+					log.info(this.getClass().getName()+": serviceServer.setOnSucceeded");
 				}
 			});
 
+			messageService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+				@Override public void handle(WorkerStateEvent event) {
+					log.info(this.getClass().getName()+": messageService.setOnSucceeded");
+					messageList.add(messageService.valueProperty().getValue());
+					serviceServer.restart();
+				}
+			});
+			
 		} );
 	}
 
@@ -78,22 +86,10 @@ public class MessengerController implements Initializable{
 		log.info(this.getClass().getName()+": serverStartAction");
 		// Server starten in einem  Task-Thread
 		server.serverStart(localServerTextField.getText());
-		task1 = createTask1();
-		t1 = new Thread(task1);
-		t1.start();
+		serviceServer.setServer(server);
+		serviceServer.restart();
 	}
 	
-	public Task<Long> createTask1() {
-		return new Task<Long>() {
-			@Override 
-			protected Long call() throws Exception {
-				log.info(this.getClass().getName()+": call to serverStart");
-				server.go();
-				return Long.valueOf(2);
-			}
-		};
-	}
-
 	// Event Listener on Button.onAction
 	@FXML // Client setzt Serverhost
 	public void connectToServerAction(ActionEvent event) {

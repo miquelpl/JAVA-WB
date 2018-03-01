@@ -8,6 +8,7 @@ import java.net.Socket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javafx.application.Platform;
 import ui.MessengerController;
 
 public class Server {
@@ -26,19 +27,24 @@ public class Server {
 		}
 	}
 
-	// Server binden: serverSocket.bind(new InetSocketAddress(localIP, 1111));
-	//Clientsocket erzeugen(holen), auf Message warten und
-	// MessageService starten
+	// Server binden: serverSocket.bind(new InetSocketAddress(localIP, 1111)); 	//Clientsocket erzeugen(holen), auf Message warten und 	// MessageService starten
 	public void serverStart(String localhost) throws IOException{
 		log.info(this.getClass().getName()+": serverStart() Anfang");
 		serverSocket.bind(new InetSocketAddress(localhost, MessengerController.PORT));
-		//go();
+	}
+
+	public void serverSocketAccept() throws IOException {
+		log.info(this.getClass().getName()+": vor serverSocket.accept();");
+		clientSocket = serverSocket.accept();
+		log.info(this.getClass().getName()+ "; Server: " +serverSocket.toString()+ "; Client: " +clientSocket.toString());
 	}
 
 	public void go() throws IOException {
-		clientSocket = serverSocket.accept();
+		log.info(this.getClass().getName()+": go()");
 		messageService.setClientSocket(clientSocket);
-		messageService.restart();
+		Platform.runLater(()->{
+			messageService.restart();
+		});
 	}
 
 	public MessageService getService() {
