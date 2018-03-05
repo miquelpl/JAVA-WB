@@ -1,41 +1,48 @@
 package app;
 
-import java.net.URL;
-import java.util.ResourceBundle;
+import java.rmi.RemoteException;
+import java.util.List;
 
-import javafx.fxml.Initializable;
+import clsv.Client;
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import model.UserTabColumns;
+import model.UserTables;
 
-public class AppController  implements Initializable {
+public class AppController {
 
 	@FXML TreeView<String> treeView;
 
-//	 private final ImageView dbIcon = new ImageView (new Image(getClass().getResourceAsStream("../database.png")));
-//	 private final ImageView userIcon = new ImageView (new Image(getClass().getResourceAsStream("../user.png")));
-//	 private final ImageView tableIcon = new ImageView (new Image(getClass().getResourceAsStream("../table.png")));
-//	 private final ImageView tablesIcon = new ImageView (new Image(getClass().getResourceAsStream("../table_and_list.png")));
-//	 private final ImageView viewsIcon = new ImageView (new Image(getClass().getResourceAsStream("../tablebinding.png")));
-//	 private final ImageView viewIcon = new ImageView (new Image(getClass().getResourceAsStream("../view.png")));
+	 @FXML public void initialize() throws RemoteException {
+		 
+    	Client client = new Client();
 
-	 @Override
-	public void initialize(URL location, ResourceBundle resources) {
-		
-		
     	TreeItem<String> rootItem = new TreeItem<>("ORCL", new ImageView (new Image(getClass().getResourceAsStream("../database.png"))));
-    	rootItem.setExpanded(true);
     	TreeItem<String> user = new TreeItem<>("HR", new ImageView (new Image(getClass().getResourceAsStream("../user.png"))));
-    	user.setExpanded(true);
     	TreeItem<String> tables = new TreeItem<>("Tabellen", new ImageView (new Image(getClass().getResourceAsStream("../table_and_list.png"))));
-    	tables.setExpanded(true);
     	TreeItem<String> views = new TreeItem<>("Views", new ImageView (new Image(getClass().getResourceAsStream("../tablebinding.png"))));
-    	tables.getChildren().addAll(
-    			new TreeItem<>("CUSTOMERS", new ImageView (new Image(getClass().getResourceAsStream("../table.png")))), 
-    			new TreeItem<>("EMPLOYEES", new ImageView (new Image(getClass().getResourceAsStream("../table.png")))), 
-    			new TreeItem<>("DEPARTMENTS", new ImageView (new Image(getClass().getResourceAsStream("../table.png")))));
+
+    	List<UserTables> userTablesList = (List<UserTables>) client.getStub().getTables();
+        for(UserTables table : userTablesList) {
+        	TreeItem<String> tableItem = new TreeItem<>(table.getTableName(), new ImageView (new Image(getClass().getResourceAsStream("../table.png")))); 
+
+        		List<UserTabColumns> userTabColumnsList = (List<UserTabColumns>) client.getStub().getTabColumns(table.getTableName());
+	            for(UserTabColumns column : userTabColumnsList) {
+	            	TreeItem<String> columnItem = new TreeItem<>(column.getColumnName(), new ImageView (new Image(getClass().getResourceAsStream("../column.png")))); 
+		        	tableItem.getChildren().add(columnItem);
+	            }
+    		
+	        	tables.getChildren().add(tableItem);
+        	
+        	//System.out.println(elem.getTableName());
+        }
+    
+    	rootItem.setExpanded(true);
+    	user.setExpanded(true);
+    	tables.setExpanded(true);
 
     	rootItem.getChildren().add(user);
     	user.getChildren().add(tables);
