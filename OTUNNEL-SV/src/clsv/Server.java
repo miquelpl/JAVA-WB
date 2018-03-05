@@ -1,10 +1,9 @@
 package clsv;
 
 import java.rmi.RemoteException;
-import java.util.Arrays;
 import java.util.List;
-
 import dao.OracleDAO;
+import model.UserTabColumns;
 import model.UserTables;
 
 public class Server implements ServerInterface {
@@ -13,10 +12,9 @@ public class Server implements ServerInterface {
     	super();
     }
 
-	public List<String> getTabColumns(String table) throws RemoteException {
-		String[] namenArr = {"COUNTRY_ID","COUNTRY_NAME","REGION_ID","Ina","Maria"};
-		List<String> namenList = Arrays.asList(namenArr);
-		return(namenList);
+	public List<UserTabColumns> getTabColumns(String table) throws RemoteException {
+		OracleDAO oracle = new OracleDAO();
+		return(oracle.getTabColumns(table));
 	}
 
 	public List<UserTables> getTables() throws RemoteException {
