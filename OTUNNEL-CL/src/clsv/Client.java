@@ -2,10 +2,6 @@ package clsv;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.List;
-
-import model.UserTabColumns;
-import model.UserTables;
 
 public class Client {
 

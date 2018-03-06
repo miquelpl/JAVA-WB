@@ -10,6 +10,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import model.Countries;
 import model.UserTabColumns;
 import model.UserTables;
 import javafx.scene.control.TableView;
@@ -56,57 +57,13 @@ public class AppController {
     	
     	treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> treeViewOnClick(newValue));
 
-        for(UserTables table : userTablesList) {
-        	System.out.println(table.getTableName().toLowerCase(Locale.GERMANY)); 
+    	List<Countries> countries = (List<Countries>) client.getStub().getRows("COUNTRIES");
+    	
+    	for(Countries country : countries) {
+    		System.out.println(country.toString());
+    	}
 
-        	List<UserTabColumns> userTabColumnsList = (List<UserTabColumns>) client.getStub().getTabColumns(table.getTableName());
-            for(UserTabColumns column : userTabColumnsList) {
-            	System.out.println("private "+Oracle2Java(column.getDataType())+" "+CamelCase(column.getColumnName())+";"); 
-            }
-        	
-        }
-
-	 
-	 }
-
-	 public String Oracle2Java(String str){
-		 String result = null;
-		 
-		 switch(str) {
-		 case "VARCHAR2":
-			 result = "String";
-			 break;
-		 case "NUMBER":
-			 result = "int";
-			 break;
-		 case "DATE":
-			 result = "LocalDate";
-			 break;
-		 case "CHAR":
-			 result = "char";
-			 break;
-		 default:
-			 result = "";
-			 break;
-		 }
-		 return(result);
-	 }
-	 
-	 
-	 
-	 
-	 public String CamelCase(String str)
-	 {
-	     String CamelCase="";
-	     String parts[] = str.split("_");
-	     for(String part:parts)
-	     {
-	         String as=part.toLowerCase();
-	         int a=as.length();
-	         CamelCase = CamelCase + as.substring(0, 1).toUpperCase()+ as.substring(1,a);    
-	     }
-	     CamelCase = CamelCase.substring(0, 1).toLowerCase()+ CamelCase.substring(1,CamelCase.length());
-	     return CamelCase;
+    	
 	 }
 
 	 private void treeViewOnClick(Object newValue) {      
