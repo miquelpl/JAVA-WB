@@ -2,7 +2,9 @@ package model;
 
 import java.io.Serializable;
 
-public class Departments implements Serializable {
+import javafx.beans.InvalidationListener;
+
+public class Departments implements Serializable, Tabellen {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -51,6 +53,18 @@ public class Departments implements Serializable {
 	public String toString() {
 		return "Departments [departmentId=" + departmentId + ", departmentName=" + departmentName + ", managerId="
 				+ managerId + ", locationId=" + locationId + "]";
+	}
+
+	@Override
+	public void addListener(InvalidationListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeListener(InvalidationListener listener) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
