@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import db.DBConnect;
+import model.Countries;
 import model.UserTabColumns;
 import model.UserTables;
 
@@ -23,7 +24,7 @@ public class OracleDAO {
 		
 		List<UserTables> userTablesList = new ArrayList<>();
 		String dml = "SELECT TABLE_NAME, TABLESPACE_NAME, STATUS FROM USER_TABLES";
-        System.out.println(dml);
+        //System.out.println(dml);
 		try (PreparedStatement ps = dbconnect.getConnection().prepareStatement(dml)){
 
 			ResultSet rs = ps.executeQuery();
@@ -45,8 +46,8 @@ public class OracleDAO {
 	public List<UserTabColumns> getTabColumns(String table) throws RemoteException {
 		List<UserTabColumns> userTabColumnsList = new ArrayList<>();
 		String dml = "SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, DATA_LENGTH, DATA_PRECISION, DATA_SCALE, NULLABLE, COLUMN_ID "
-				+ "FROM USER_TABLES WHERE TABLE_NAME =? ORDER BY COLUMN_ID ASC";
-        System.out.println(dml);
+				+ "FROM USER_TAB_COLUMNS WHERE TABLE_NAME =? ORDER BY COLUMN_ID ASC";
+        //System.out.println(dml);
 		try (PreparedStatement ps = dbconnect.getConnection().prepareStatement(dml)){
 			
 			ps.setString(1, table);
@@ -70,6 +71,28 @@ public class OracleDAO {
 		}
 
 		return(userTabColumnsList);
+	}
+
+	public List<Countries> getRows(String table) throws RemoteException {
+		List<Countries> rows = new ArrayList<>();
+		String dml = "SELECT * FROM "+table;
+        System.out.println(dml);
+		try (PreparedStatement ps = dbconnect.getConnection().prepareStatement(dml)){
+			
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				Countries country = new Countries();
+				country.setCountryId(rs.getString(1));
+				country.setCountryName(rs.getString(2));
+				country.setRegionId(rs.getInt(3));
+				rows.add(country);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return(rows);
 	}
 
 
