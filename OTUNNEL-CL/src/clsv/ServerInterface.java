@@ -11,5 +11,5 @@ import model.UserTables;
 public interface ServerInterface extends Remote {
 	List<UserTabColumns> getTabColumns(String table) throws RemoteException; 
 	List<UserTables> getTables() throws RemoteException; 
-	List<Countries> getRows(String table) throws RemoteException; 
+	List<?> getRows(String table) throws RemoteException; 
 }
