@@ -3,7 +3,9 @@ package model;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Employees implements Serializable {
+import javafx.beans.InvalidationListener;
+
+public class Employees implements Serializable, Tabellen {
 
 	private static final long serialVersionUID = 1L;
 
@@ -111,6 +113,18 @@ public class Employees implements Serializable {
 				+ ", email=" + email + ", phoneNumber=" + phoneNumber + ", hireDate=" + hireDate + ", jobId=" + jobId
 				+ ", salary=" + salary + ", commissionPct=" + commissionPct + ", managerId=" + managerId
 				+ ", departmentId=" + departmentId + "]";
+	}
+
+	@Override
+	public void addListener(InvalidationListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeListener(InvalidationListener listener) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

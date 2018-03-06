@@ -2,7 +2,9 @@ package model;
 
 import java.io.Serializable;
 
-public class Locations implements Serializable {
+import javafx.beans.InvalidationListener;
+
+public class Locations implements Serializable, Tabellen {
 
 	private static final long serialVersionUID = 1L;
 
@@ -64,6 +66,16 @@ public class Locations implements Serializable {
 	public String toString() {
 		return "Locations [locationId=" + locationId + ", streetAddress=" + streetAddress + ", postalCode=" + postalCode
 				+ ", city=" + city + ", stateProvince=" + stateProvince + ", countryId=" + countryId + "]";
+	}
+	@Override
+	public void addListener(InvalidationListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void removeListener(InvalidationListener listener) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

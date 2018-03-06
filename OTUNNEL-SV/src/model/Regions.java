@@ -2,7 +2,9 @@ package model;
 
 import java.io.Serializable;
 
-public class Regions implements Serializable {
+import javafx.beans.InvalidationListener;
+
+public class Regions implements Serializable, Tabellen {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -31,6 +33,16 @@ public class Regions implements Serializable {
 	@Override
 	public String toString() {
 		return "Regions [regionId=" + regionId + ", regionName=" + regionName + "]";
+	}
+	@Override
+	public void addListener(InvalidationListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void removeListener(InvalidationListener listener) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

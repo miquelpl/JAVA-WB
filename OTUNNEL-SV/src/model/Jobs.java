@@ -2,7 +2,9 @@ package model;
 
 import java.io.Serializable;
 
-public class Jobs implements Serializable {
+import javafx.beans.InvalidationListener;
+
+public class Jobs implements Serializable, Tabellen {
 
 	private static final long serialVersionUID = 1L;
 
@@ -50,6 +52,18 @@ public class Jobs implements Serializable {
 	public String toString() {
 		return "Jobs [jobId=" + jobId + ", jobTitle=" + jobTitle + ", minSalary=" + minSalary + ", maxSalary="
 				+ maxSalary + "]";
+	}
+
+	@Override
+	public void addListener(InvalidationListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeListener(InvalidationListener listener) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
