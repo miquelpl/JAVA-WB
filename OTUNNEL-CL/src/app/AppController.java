@@ -2,27 +2,23 @@ package app;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Locale;
 
 import clsv.Client;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.text.Text;
 import model.UserTabColumns;
 import model.UserTables;
-import javafx.scene.Node;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TreeCell;
 
 public class AppController {
 
 	@FXML TreeView<String> treeView;
-	@FXML TableView<String> tableView;
+	@FXML TableView<?> tableView;
 	@FXML TextArea textArea;
 
 	 @FXML public void initialize() throws RemoteException {
@@ -46,7 +42,6 @@ public class AppController {
             
         	tables.getChildren().add(tableItem);
         	
-        	//System.out.println(elem.getTableName());
         }
     
     	rootItem.setExpanded(true);
@@ -58,22 +53,65 @@ public class AppController {
     	user.getChildren().add(views);
     	
     	treeView.setRoot(rootItem);
-
-    	EventHandler<MouseEvent> mouseEventHandle = (MouseEvent event) -> {
-    	    handleMouseClicked(event);
-    	};
     	
-    	treeView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventHandle);
-	}
+    	treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> treeViewOnClick(newValue));
 
-	 private void handleMouseClicked(MouseEvent event) {
-	    Node node = event.getPickResult().getIntersectedNode();
-	    // Accept clicks only on node cells, and not on empty spaces of the TreeView
-	    if (node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() != null)) {
-	        String name = (String) ((TreeItem)treeView.getSelectionModel().getSelectedItem()).getValue();
-	        System.out.println("Node click: " + name);
-	    }
-	}
+        for(UserTables table : userTablesList) {
+        	System.out.println(table.getTableName().toLowerCase(Locale.GERMANY)); 
 
+        	List<UserTabColumns> userTabColumnsList = (List<UserTabColumns>) client.getStub().getTabColumns(table.getTableName());
+            for(UserTabColumns column : userTabColumnsList) {
+            	System.out.println("private "+Oracle2Java(column.getDataType())+" "+CamelCase(column.getColumnName())+";"); 
+            }
+        	
+        }
+
+	 
+	 }
+
+	 public String Oracle2Java(String str){
+		 String result = null;
+		 
+		 switch(str) {
+		 case "VARCHAR2":
+			 result = "String";
+			 break;
+		 case "NUMBER":
+			 result = "int";
+			 break;
+		 case "DATE":
+			 result = "LocalDate";
+			 break;
+		 case "CHAR":
+			 result = "char";
+			 break;
+		 default:
+			 result = "";
+			 break;
+		 }
+		 return(result);
+	 }
+	 
+	 
+	 
+	 
+	 public String CamelCase(String str)
+	 {
+	     String CamelCase="";
+	     String parts[] = str.split("_");
+	     for(String part:parts)
+	     {
+	         String as=part.toLowerCase();
+	         int a=as.length();
+	         CamelCase = CamelCase + as.substring(0, 1).toUpperCase()+ as.substring(1,a);    
+	     }
+	     CamelCase = CamelCase.substring(0, 1).toLowerCase()+ CamelCase.substring(1,CamelCase.length());
+	     return CamelCase;
+	 }
+
+	 private void treeViewOnClick(Object newValue) {      
+		    System.out.println(newValue);
+	}
+	 
 	
 }
