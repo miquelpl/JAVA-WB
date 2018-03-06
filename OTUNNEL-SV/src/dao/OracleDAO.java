@@ -9,6 +9,9 @@ import java.util.List;
 
 import db.DBConnect;
 import model.Countries;
+import model.Departments;
+import model.Regions;
+import model.Tabellen;
 import model.UserTabColumns;
 import model.UserTables;
 
@@ -73,26 +76,63 @@ public class OracleDAO {
 		return(userTabColumnsList);
 	}
 
-	public List<Countries> getRows(String table) throws RemoteException {
-		List<Countries> rows = new ArrayList<>();
+	public List<?> getRows(String table) throws RemoteException {
+		List<Tabellen> rows = new ArrayList<>();
+        List<List<Object>> data = new ArrayList<>();
 		String dml = "SELECT * FROM "+table;
         System.out.println(dml);
 		try (PreparedStatement ps = dbconnect.getConnection().prepareStatement(dml)){
 			
 			ResultSet rs = ps.executeQuery();
 
-			while (rs.next()) {
-				Countries country = new Countries();
-				country.setCountryId(rs.getString(1));
-				country.setCountryName(rs.getString(2));
-				country.setRegionId(rs.getInt(3));
-				rows.add(country);
+			switch(table) {
+				case "COUNTRIES":
+					while (rs.next()) {
+						Countries country = new Countries();
+						country.setCountryId(rs.getString(1));
+						country.setCountryName(rs.getString(2));
+						country.setRegionId(rs.getInt(3));
+						rows.add(country);
+					}
+					break;
+				case "DEPARTMENTS":
+					while (rs.next()) {
+						Departments department = new Departments();
+						department.setDepartmentId(rs.getInt(1));
+						department.setDepartmentName(rs.getString(2));
+						department.setManagerId(rs.getInt(3));
+						department.setLocationId(rs.getInt(4));
+						rows.add(department);
+					}
+					break;
+				case "REGIONS":
+					while (rs.next()) {
+						Regions region = new Regions();
+						region.setRegionId(rs.getInt(1));
+						region.setRegionName(rs.getString(2));
+						rows.add(region);
+					}
+					break;
+				default:
 			}
+
+//	        List<String> columnNames = new ArrayList<>();
+//            int columnCount = rs.getMetaData().getColumnCount();
+//            System.out.println(columnCount);
+//			while (rs.next()) {
+//                List<Object> row = new ArrayList<>();
+//                for (int i = 1 ; i <= columnCount ; i++) {
+//                    row.add(rs.getObject(i));
+//                }
+//                data.add(row);
+//            }
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
 		return(rows);
+//		return(data);
 	}
 
 

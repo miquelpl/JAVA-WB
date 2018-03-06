@@ -16,6 +16,10 @@ public class UserTables implements Serializable {
 		this.status = status;
 	}
 
+	public UserTables() {
+		super();
+	}
+
 	public String getTableName() {
 		return tableName;
 	}

@@ -24,7 +24,7 @@ public class Server implements ServerInterface {
 	}
 
 	@Override
-	public List<Countries> getRows(String table) throws RemoteException {
+	public List<?> getRows(String table) throws RemoteException {
 		OracleDAO oracle = new OracleDAO();
 		return(oracle.getRows(table));
 	}
