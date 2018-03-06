@@ -1,10 +1,21 @@
 package model;
 
-public class Regions {
+import java.io.Serializable;
+
+public class Regions implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	
 	private int regionId;
 	private String regionName;
 
+	public Regions() {
+		super();
+	}
+	public Regions(int regionId, String regionName) {
+		this.regionId = regionId;
+		this.regionName = regionName;
+	}
 	public int getRegionId() {
 		return regionId;
 	}
@@ -16,6 +27,10 @@ public class Regions {
 	}
 	public void setRegionName(String regionName) {
 		this.regionName = regionName;
+	}
+	@Override
+	public String toString() {
+		return "Regions [regionId=" + regionId + ", regionName=" + regionName + "]";
 	}
 
 	

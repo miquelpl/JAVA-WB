@@ -1,10 +1,27 @@
 package model;
 
-public class Jobs {
+import java.io.Serializable;
+
+public class Jobs implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	private String jobId;
 	private String jobTitle;
 	private int minSalary;
 	private int maxSalary;
+	
+	public Jobs() {
+		super();
+	}
+
+	public Jobs(String jobId, String jobTitle, int minSalary, int maxSalary) {
+		this.jobId = jobId;
+		this.jobTitle = jobTitle;
+		this.minSalary = minSalary;
+		this.maxSalary = maxSalary;
+	}
+
 	public String getJobId() {
 		return jobId;
 	}
@@ -28,6 +45,11 @@ public class Jobs {
 	}
 	public void setMaxSalary(int maxSalary) {
 		this.maxSalary = maxSalary;
+	}
+	@Override
+	public String toString() {
+		return "Jobs [jobId=" + jobId + ", jobTitle=" + jobTitle + ", minSalary=" + minSalary + ", maxSalary="
+				+ maxSalary + "]";
 	}
 
 }
