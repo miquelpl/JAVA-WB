@@ -1,8 +1,12 @@
 package model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Employees {
+public class Employees implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	private int employeeId;
 	private String firstName;
 	private String lastName;
@@ -14,6 +18,26 @@ public class Employees {
 	private int commissionPct;
 	private int managerId;
 	private int departmentId;
+	
+	public Employees() {
+		super();
+	}
+	
+	public Employees(int employeeId, String firstName, String lastName, String email, String phoneNumber,
+			LocalDate hireDate, String jobId, int salary, int commissionPct, int managerId, int departmentId) {
+		this.employeeId = employeeId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.phoneNumber = phoneNumber;
+		this.hireDate = hireDate;
+		this.jobId = jobId;
+		this.salary = salary;
+		this.commissionPct = commissionPct;
+		this.managerId = managerId;
+		this.departmentId = departmentId;
+	}
+
 	public int getEmployeeId() {
 		return employeeId;
 	}
@@ -79,6 +103,14 @@ public class Employees {
 	}
 	public void setDepartmentId(int departmentId) {
 		this.departmentId = departmentId;
+	}
+
+	@Override
+	public String toString() {
+		return "Employees [employeeId=" + employeeId + ", firstName=" + firstName + ", lastName=" + lastName
+				+ ", email=" + email + ", phoneNumber=" + phoneNumber + ", hireDate=" + hireDate + ", jobId=" + jobId
+				+ ", salary=" + salary + ", commissionPct=" + commissionPct + ", managerId=" + managerId
+				+ ", departmentId=" + departmentId + "]";
 	}
 
 }

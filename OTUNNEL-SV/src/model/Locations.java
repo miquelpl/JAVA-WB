@@ -1,13 +1,29 @@
 package model;
 
-public class Locations {
+import java.io.Serializable;
+
+public class Locations implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	private int locationId;
 	private String streetAddress;
 	private String postalCode;
 	private String city;
 	private String stateProvince;
-	private char countryId;
+	private String countryId;
 	
+	public Locations() {
+		super();
+	}
+	public Locations(int locationId, String streetAddress, String postalCode, String city, String stateProvince, String countryId) {
+		this.locationId = locationId;
+		this.streetAddress = streetAddress;
+		this.postalCode = postalCode;
+		this.city = city;
+		this.stateProvince = stateProvince;
+		this.countryId = countryId;
+	}
 	public int getLocationId() {
 		return locationId;
 	}
@@ -38,11 +54,16 @@ public class Locations {
 	public void setStateProvince(String stateProvince) {
 		this.stateProvince = stateProvince;
 	}
-	public char getCountryId() {
+	public String getCountryId() {
 		return countryId;
 	}
-	public void setCountryId(char countryId) {
+	public void setCountryId(String countryId) {
 		this.countryId = countryId;
+	}
+	@Override
+	public String toString() {
+		return "Locations [locationId=" + locationId + ", streetAddress=" + streetAddress + ", postalCode=" + postalCode
+				+ ", city=" + city + ", stateProvince=" + stateProvince + ", countryId=" + countryId + "]";
 	}
 
 	
