@@ -4,12 +4,17 @@ import java.rmi.RemoteException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import db.DBConnect;
 import model.Countries;
 import model.Departments;
+import model.Employees;
+import model.JobHistory;
+import model.Jobs;
+import model.Locations;
 import model.Regions;
 import model.Tabellen;
 import model.UserTabColumns;
@@ -76,6 +81,33 @@ public class OracleDAO {
 		return(userTabColumnsList);
 	}
 
+	public List<Tabellen> getRows(String table, String where) throws RemoteException {
+		List<Tabellen> rows = new ArrayList<>();
+        List<List<Object>> data = new ArrayList<>();
+		String dml = "SELECT * FROM "+table+" "+where;
+        System.out.println(dml);
+		try (PreparedStatement ps = dbconnect.getConnection().prepareStatement(dml)){
+			
+			ResultSet rs = ps.executeQuery();
+			List<String> columnNames = new ArrayList<>();
+			int columnCount = rs.getMetaData().getColumnCount();
+			System.out.println(columnCount);
+			while (rs.next()) {
+				List<Object> row = new ArrayList<>();
+				for (int i = 1; i <= columnCount; i++) {
+					row.add(rs.getObject(i));
+				}
+				data.add(row);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return (rows);
+		// return(data);
+	}
+
 	public List<?> getRows(String table) throws RemoteException {
 		List<Tabellen> rows = new ArrayList<>();
         List<List<Object>> data = new ArrayList<>();
@@ -105,6 +137,56 @@ public class OracleDAO {
 						rows.add(department);
 					}
 					break;
+				case "EMPLOYEES":
+					while (rs.next()) {
+						Employees employee = new Employees();
+						employee.setEmployeeId(rs.getInt(1));
+						employee.setFirstName(rs.getString(2));
+						employee.setLastName(rs.getString(3));
+						employee.setEmail(rs.getString(4));
+						employee.setPhoneNumber(rs.getString(5));
+						employee.setHireDate(rs.getDate(6).toLocalDate());
+						employee.setJobId(rs.getString(7));
+						employee.setSalary(rs.getInt(8));
+						employee.setCommissionPct(rs.getInt(9));
+						employee.setManagerId(rs.getInt(10));
+						employee.setDepartmentId(rs.getInt(11));
+						rows.add(employee);
+					}
+					break;
+				case "JOB_HISTORY":
+					while (rs.next()) {
+						JobHistory jobHistory = new JobHistory();
+						jobHistory.setEmployeeId(rs.getInt(1));
+						jobHistory.setStartDate(rs.getDate(2).toLocalDate());
+						jobHistory.setEndDate(rs.getDate(3).toLocalDate());
+						jobHistory.setJobId(rs.getString(4));
+						jobHistory.setDepartmentId(rs.getInt(5));
+						rows.add(jobHistory);
+					}
+					break;
+				case "JOBS":
+					while (rs.next()) {
+						Jobs job = new Jobs();
+						job.setJobId(rs.getString(1));
+						job.setJobTitle(rs.getString(2));
+						job.setMinSalary(rs.getInt(3));
+						job.setMaxSalary(rs.getInt(4));
+						rows.add(job);
+					}
+					break;
+				case "LOCATIONS":
+					while (rs.next()) {
+						Locations location = new Locations();
+						location.setLocationId(rs.getInt(1));
+						location.setStreetAddress(rs.getString(2));
+						location.setPostalCode(rs.getString(3));
+						location.setCity(rs.getString(4));
+						location.setStateProvince(rs.getString(5));
+						location.setCountryId(rs.getString(6));
+						rows.add(location);
+					}
+					break;
 				case "REGIONS":
 					while (rs.next()) {
 						Regions region = new Regions();
@@ -116,16 +198,6 @@ public class OracleDAO {
 				default:
 			}
 
-//	        List<String> columnNames = new ArrayList<>();
-//            int columnCount = rs.getMetaData().getColumnCount();
-//            System.out.println(columnCount);
-//			while (rs.next()) {
-//                List<Object> row = new ArrayList<>();
-//                for (int i = 1 ; i <= columnCount ; i++) {
-//                    row.add(rs.getObject(i));
-//                }
-//                data.add(row);
-//            }
 
 		} catch (SQLException e) {
 			e.printStackTrace();

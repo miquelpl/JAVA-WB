@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 import dao.OracleDAO;
 import model.Countries;
+import model.Tabellen;
 import model.UserTabColumns;
 import model.UserTables;
 
@@ -29,5 +30,9 @@ public class Server implements ServerInterface {
 		return(oracle.getRows(table));
 	}
 
+	public List<Tabellen> getRows(String table, String where) throws RemoteException {
+		OracleDAO oracle = new OracleDAO();
+		return(oracle.getRows(table, where));
+	}
 
 }
