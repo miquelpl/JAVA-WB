@@ -1,13 +1,15 @@
 package app;
 
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import clsv.Client;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,14 +18,18 @@ import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import model.Countries;
-import model.Regions;
+import model.DataResult;
+import model.MetaData;
 import model.Tabellen;
 import model.UserTabColumns;
 import model.UserTables;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Button;
+import javafx.scene.control.Tab;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.control.TabPane;
 
 public class AppController {
 
@@ -60,16 +66,19 @@ public class AppController {
 	@FXML private TableColumn<Tabellen, String> stateProvince = new TableColumn<Tabellen, String>("STATE PROVINCE");
 
 	private Client client;
+	@FXML TextArea dbmsTextArea;
+	@FXML Button boton;
+	@FXML ImageView runImage;
+	@FXML ImageView stopImage;
+	@FXML TabPane tabPane;
 	
+	private static Logger log = LogManager.getLogger();
+
 	@FXML public void initialize() throws RemoteException {
 
 		client = new Client();
     	initTree(client);
 		tableView.setItems(dList);
-
-//    	List<Countries> countries = (List<Countries>) client.getStub().getRows("COUNTRIES");
-//    	List<Tabellen> rows = (List<Tabellen>) client.getStub().getRows("COUNTRIES");
-//    	System.out.println(rows);
 
 		countryId.setCellValueFactory(new PropertyValueFactory<>("countryId"));
 		countryName.setCellValueFactory(new PropertyValueFactory<>("countryName"));
@@ -98,11 +107,11 @@ public class AppController {
 		city.setCellValueFactory(new PropertyValueFactory<>("city"));
 		stateProvince.setCellValueFactory(new PropertyValueFactory<>("stateProvince"));
 		
-//		tableView.getColumns().setAll(countryId, countryName, regionId);
-//    	dList.addAll(rows);    	
 	 }
 
 	 private void treeViewOnClick(String table) throws RemoteException {   
+
+		log.info("Table selected "+ table);
 
 		List<Tabellen> rows = (List<Tabellen>) client.getStub().getRows(table); 
 
@@ -164,14 +173,67 @@ public class AppController {
     	
     	treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			try {
-				System.out.println(newValue.getParent().getValue());
 				if(newValue.getParent().getValue()=="Tabellen")
 					treeViewOnClick(newValue.getValue());
 			} catch (RemoteException e) {
-				e.printStackTrace();
+				log.error(" Fehler: "+ e.fillInStackTrace());                               // e.printStackTrace();
 			}
 		});
 	}
+
+	@FXML public void runOnClick(MouseEvent event) throws SQLException {
+		dbmsTextArea.appendText(textArea.getSelectedText()+"\n\n");
+		String dml = textArea.getSelectedText();
+		if(!dml.isEmpty()) {
+			log.info("runSelect "+dml);
+			try {
+				DataResult rows = (DataResult) client.getStub().runSelect(dml);
+				createTableView(rows);
+				displayDataResult(rows);
+			} catch (RemoteException e) {
+				log.error(" Fehler: "+ e.fillInStackTrace());                               // e.printStackTrace();
+			} 
+		}
+	}
+
+	private void createTableView(DataResult rows) {
+		
+		TableView<List<Object>> table = new TableView<>();
+
+		for (int i = 0 ; i < rows.getMetaData().size() ; i++) {
+		    TableColumn<List<Object>, Object> column = new TableColumn<>(rows.getMetaData().get(i).getColumnName());
+		    int columnIndex = i ;
+		    column.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().get(columnIndex)));
+		    table.getColumns().add(column);
+		}
+
+		table.getItems().setAll(rows.getData());
+		Tab tab = new Tab("SELECT "+tabPane.getTabs().size());
+		tab.setContent(table);
+		tabPane.getTabs().add(tab);
+		
+	}
+
+	public void displayDataResult(DataResult rows) {
+		for(MetaData metaData : rows.getMetaData()) {
+			dbmsTextArea.appendText(metaData.getColumnName()+"\t\t");
+		}
+		dbmsTextArea.appendText("\n");
+
+		for(List<Object> data : rows.getData()) {
+			for(Object elem : data) {
+				String value = (elem == null) ? "" : elem.toString();
+				
+				dbmsTextArea.appendText(value+"\t\t");
+			}
+			dbmsTextArea.appendText("\n");
+		}
+	}
+
+	@FXML public void stopOnClick(MouseEvent event) {}
+
+
+	@FXML public void buttonOnClick(MouseEvent event) {}
 
 	
 }

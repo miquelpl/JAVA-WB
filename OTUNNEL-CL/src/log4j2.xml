@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+	<Appenders>
+		<Console name="console" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c %M - %msg%n" />
+		</Console>
+		<RollingFile name="file" fileName="log/app-info.log"
+			filePattern="log/app-info-%d{yyyy-MM-dd--mm}.log">
+			<PatternLayout>
+				<pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c - %msg%n
+				</pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1"
+					modulate="true" />
+			</Policies>
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+	
+		<Root level="debug"><!-- Klasse A erbt Level von Root (Main) -->
+			<AppenderRef ref="console" />
+		</Root>
+		<Logger name="b.B" level="info"><!-- Klasse B kein dbug, alles ab Info -->
+			<AppenderRef ref="file" /> <!-- file and console --> 
+		</Logger>
+		<Logger name="c.C" level="off">
+			<AppenderRef ref="console" /> <!-- only console -->
+		</Logger>
+	</Loggers>
+</Configuration>
