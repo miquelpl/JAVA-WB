@@ -3,6 +3,7 @@ package dao;
 import java.rmi.RemoteException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,11 +11,13 @@ import java.util.List;
 
 import db.DBConnect;
 import model.Countries;
+import model.DataResult;
 import model.Departments;
 import model.Employees;
 import model.JobHistory;
 import model.Jobs;
 import model.Locations;
+import model.MetaData;
 import model.Regions;
 import model.Tabellen;
 import model.UserTabColumns;
@@ -81,18 +84,24 @@ public class OracleDAO {
 		return(userTabColumnsList);
 	}
 
-	public List<Tabellen> getRows(String table, String where) throws RemoteException {
-		List<Tabellen> rows = new ArrayList<>();
+	public DataResult runSelect(String dml) throws RemoteException {
         List<List<Object>> data = new ArrayList<>();
-		String dml = "SELECT * FROM "+table+" "+where;
+        List<String> columnNames = new ArrayList<>();
+        MetaData md = null;
+        
         System.out.println(dml);
 		try (PreparedStatement ps = dbconnect.getConnection().prepareStatement(dml)){
 			
 			ResultSet rs = ps.executeQuery();
-			List<String> columnNames = new ArrayList<>();
 			int columnCount = rs.getMetaData().getColumnCount();
-			System.out.println(columnCount);
-			while (rs.next()) {
+			md = (MetaData)rs.getMetaData();
+
+            for (int i = 1 ; i <= columnCount ; i++) {
+                columnNames.add(rs.getMetaData().getColumnName(i));
+                System.out.println(rs.getMetaData().getColumnName(i));
+            }
+
+            while (rs.next()) {
 				List<Object> row = new ArrayList<>();
 				for (int i = 1; i <= columnCount; i++) {
 					row.add(rs.getObject(i));
@@ -104,13 +113,11 @@ public class OracleDAO {
 			e.printStackTrace();
 		}
 
-		return (rows);
-		// return(data);
+		return new DataResult(columnNames, data, md);
 	}
 
 	public List<?> getRows(String table) throws RemoteException {
 		List<Tabellen> rows = new ArrayList<>();
-        List<List<Object>> data = new ArrayList<>();
 		String dml = "SELECT * FROM "+table;
         System.out.println(dml);
 		try (PreparedStatement ps = dbconnect.getConnection().prepareStatement(dml)){
@@ -204,7 +211,6 @@ public class OracleDAO {
 		}
 
 		return(rows);
-//		return(data);
 	}
 
 
