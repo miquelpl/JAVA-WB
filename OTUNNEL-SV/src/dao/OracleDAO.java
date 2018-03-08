@@ -86,19 +86,16 @@ public class OracleDAO {
 
 	public DataResult runSelect(String dml) throws RemoteException {
         List<List<Object>> data = new ArrayList<>();
-        List<String> columnNames = new ArrayList<>();
-        MetaData md = null;
+        List<MetaData> metaData = new ArrayList<>();
         
         System.out.println(dml);
 		try (PreparedStatement ps = dbconnect.getConnection().prepareStatement(dml)){
 			
 			ResultSet rs = ps.executeQuery();
 			int columnCount = rs.getMetaData().getColumnCount();
-			md = (MetaData)rs.getMetaData();
 
             for (int i = 1 ; i <= columnCount ; i++) {
-                columnNames.add(rs.getMetaData().getColumnName(i));
-                System.out.println(rs.getMetaData().getColumnName(i));
+            	metaData.add(new MetaData(rs.getMetaData().getColumnName(i), rs.getMetaData().getColumnClassName(i)));
             }
 
             while (rs.next()) {
@@ -113,7 +110,7 @@ public class OracleDAO {
 			e.printStackTrace();
 		}
 
-		return new DataResult(columnNames, data, md);
+		return new DataResult(metaData, data);
 	}
 
 	public List<?> getRows(String table) throws RemoteException {

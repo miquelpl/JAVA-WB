@@ -1,13 +1,18 @@
 package app;
 	
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.fxml.FXMLLoader;
 
-
 public class Main extends Application {
+
+	private static Logger log = LogManager.getRootLogger();
+
 	@Override
 	public void start(Stage primaryStage) {
 		try {
