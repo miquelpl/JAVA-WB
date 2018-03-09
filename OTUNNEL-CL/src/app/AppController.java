@@ -1,5 +1,6 @@
 package app;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -13,6 +14,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -26,10 +28,20 @@ import model.UserTables;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.DialogPane;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.Tab;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.scene.control.TabPane;
+import javafx.event.ActionEvent;
 
 public class AppController {
 
@@ -66,12 +78,14 @@ public class AppController {
 	@FXML private TableColumn<Tabellen, String> stateProvince = new TableColumn<Tabellen, String>("STATE PROVINCE");
 
 	private Client client;
+	private TreeItem<String> rootItem;
+	
 	@FXML TextArea dbmsTextArea;
 	@FXML Button boton;
 	@FXML ImageView runImage;
 	@FXML ImageView stopImage;
 	@FXML TabPane tabPane;
-	
+
 	private static Logger log = LogManager.getLogger();
 
 	@FXML public void initialize() throws RemoteException {
@@ -144,7 +158,7 @@ public class AppController {
 	}
 	 
 	private void initTree(Client client) throws RemoteException {
-		TreeItem<String> rootItem = new TreeItem<>("ORCL", new ImageView (new Image(getClass().getResourceAsStream("/resource/database.png"))));
+		rootItem = new TreeItem<>("ORCL", new ImageView (new Image(getClass().getResourceAsStream("/resource/database.png"))));
     	TreeItem<String> user = new TreeItem<>("HR", new ImageView (new Image(getClass().getResourceAsStream("/resource/user.png"))));
     	TreeItem<String> tables = new TreeItem<>("Tabellen", new ImageView (new Image(getClass().getResourceAsStream("/resource/table_and_list.png"))));
     	TreeItem<String> views = new TreeItem<>("Views", new ImageView (new Image(getClass().getResourceAsStream("/resource/tablebinding.png"))));
@@ -179,6 +193,36 @@ public class AppController {
 				log.error(" Fehler: "+ e.fillInStackTrace());                               // e.printStackTrace();
 			}
 		});
+	}
+
+	@FXML private TextField server;
+	@FXML private TextField datenbank;
+	@FXML private TextField benutzer;
+	@FXML private TextField port;
+	@FXML private PasswordField password;
+	@FXML private Button cancelButton;
+	@FXML private Button createButton;
+
+	@FXML public void buttonOnClick(MouseEvent event) {
+
+		DBPromptController dbpc = new DBPromptController();
+		
+		Scene scene = new Scene(dbpc, 500, 300);
+		Stage stage = new Stage();
+		stage.setTitle("Neue Datenbank Verbindung");
+		stage.initModality(Modality.APPLICATION_MODAL);
+		stage.setScene(scene);
+		stage.show();
+
+//		try {
+//			dbPrompt = (DialogPane)FXMLLoader.load(getClass().getResource("DBPrompt.fxml"));
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//
+//    	TreeItem<String> user = new TreeItem<>("SH", new ImageView (new Image(getClass().getResourceAsStream("/resource/user.png"))));
+//		rootItem.getChildren().add(user);
+		
 	}
 
 	@FXML public void runOnClick(MouseEvent event) throws SQLException {
@@ -232,8 +276,22 @@ public class AppController {
 
 	@FXML public void stopOnClick(MouseEvent event) {}
 
+	@FXML public void createButtonOnClick(ActionEvent event) {
+		if(rootItem.getChildren().stream().map(u-> u.getValue()==benutzer.getText()).count()==0) {
+			TreeItem<String> user = new TreeItem<>(benutzer.getText(), new ImageView (new Image(getClass().getResourceAsStream("/resource/user.png"))));
+			rootItem.getChildren().add(user);
+		}
 
-	@FXML public void buttonOnClick(MouseEvent event) {}
+		
+		
+	}
+
+	@FXML public void cancelButtonOnClick(ActionEvent event) {
+		datenbank.setText("");
+		benutzer.setText("");
+		password.setText("");
+
+	}
 
 	
 }

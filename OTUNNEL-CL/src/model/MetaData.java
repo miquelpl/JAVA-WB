@@ -11,7 +11,6 @@ public class MetaData implements Serializable{
 	
 	public MetaData() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public MetaData(String columnName, String columnClassName) {

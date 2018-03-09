@@ -18,7 +18,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			VBox root = (VBox)FXMLLoader.load(getClass().getResource("App.fxml"));
-			Scene scene = new Scene(root,800,600);
+			Scene scene = new Scene(root,1000,600);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			//primaryStage.setMaximized(true);
 			primaryStage.setScene(scene);
