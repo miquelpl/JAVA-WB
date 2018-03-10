@@ -263,7 +263,10 @@ public class AppController {
 			dbmsTextArea.appendText(metaData.getColumnName()+"\t\t");
 		}
 		dbmsTextArea.appendText("\n");
+		printListObject(rows);
+	}
 
+	public void printListObject(DataResult rows) {
 		for(List<Object> data : rows.getData()) {
 			for(Object elem : data) {
 				String value = (elem == null) ? "" : elem.toString();
@@ -277,12 +280,34 @@ public class AppController {
 	@FXML public void stopOnClick(MouseEvent event) {}
 
 	@FXML public void createButtonOnClick(ActionEvent event) {
-		if(rootItem.getChildren().stream().map(u-> u.getValue()==benutzer.getText()).count()==0) {
-			TreeItem<String> user = new TreeItem<>(benutzer.getText(), new ImageView (new Image(getClass().getResourceAsStream("/resource/user.png"))));
-			rootItem.getChildren().add(user);
+		boolean exist = false;
+		for(TreeItem<String> elem : rootItem.getChildren()) {
+			if(elem.getValue().compareTo(benutzer.getText())==0) {
+				exist = true;
+				break;
+			}
 		}
+//System.out.println(exist);
+//System.out.println("createButtonOnClick: "+rootItem.getChildren().stream().map(u-> u.getValue().compareTo(benutzer.getText())).count());
+//if(rootItem.getChildren().stream().map(u-> u.getValue().compareTo(benutzer.getText())).count()==0) {
+			if(!exist) {
+System.out.println("usuario nuevo");
+			DataResult rows = null;			
+			try {
+				String dml = "SELECT * FROM USER_TABLES";
+				boolean ok = client.getStub().createConnection(benutzer.getText(), password.getText());
+				if(ok) {
+					System.out.println("ok = true");
+					rows = (DataResult) client.getStub().runSelect(benutzer.getText(), dml);
+					TreeItem<String> user = new TreeItem<>(benutzer.getText(), new ImageView (new Image(getClass().getResourceAsStream("/resource/user.png"))));
+					rootItem.getChildren().add(user);
+					printListObject(rows);
+				}
+			} catch (RemoteException e) {
+				log.error(" Fehler: "+ e.fillInStackTrace());                               // e.printStackTrace();
+			} 
 
-		
+		}
 		
 	}
 
