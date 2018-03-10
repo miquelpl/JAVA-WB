@@ -13,8 +13,8 @@ public final class DBConnect {
 		try {
 			con  = DriverManager.getConnection(	Prop.get("url")+Prop.get("db"),
 												Prop.get("usr"),
-												Prop.get("pwd")
-					);
+												Prop.get("pwd")	);
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

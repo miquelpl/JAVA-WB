@@ -1,15 +1,15 @@
 package dao;
 
 import java.rmi.RemoteException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import db.DBConnect;
+import db.OracleDBConnections;
 import model.Countries;
 import model.DataResult;
 import model.Departments;
@@ -82,6 +82,55 @@ public class OracleDAO {
 		}
 
 		return(userTabColumnsList);
+	}
+
+	public DataResult runSelect(String user, String dml) throws RemoteException {
+        List<List<Object>> data = new ArrayList<>();
+        List<MetaData> metaData = new ArrayList<>();
+		Connection con = null;
+		
+        System.out.println("runSelect: "+user+", "+dml);
+        OracleDBConnections connections = new OracleDBConnections();
+		try {
+			con = connections.getConnection(user);
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+        
+        System.out.println(dml);
+		try (PreparedStatement ps = con.prepareStatement(dml)){
+			
+			ResultSet rs = ps.executeQuery();
+			int columnCount = rs.getMetaData().getColumnCount();
+
+            for (int i = 1 ; i <= columnCount ; i++) {
+            	metaData.add(new MetaData(rs.getMetaData().getColumnName(i), rs.getMetaData().getColumnClassName(i)));
+            }
+
+            while (rs.next()) {
+				List<Object> row = new ArrayList<>();
+				for (int i = 1; i <= columnCount; i++) {
+					row.add(rs.getObject(i));
+				}
+				data.add(row);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return new DataResult(metaData, data);
+	}
+
+	public boolean createConnection(String user, String pwd) throws RemoteException {
+		OracleDBConnections connections = new OracleDBConnections();
+		try {
+			connections.createConnection(user, pwd);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return(false);
+		}
+		return true;
 	}
 
 	public DataResult runSelect(String dml) throws RemoteException {
