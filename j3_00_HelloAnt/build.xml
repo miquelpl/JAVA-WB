@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     19.03.2018 11:00:40                                                        
+
+     project    
+     description
+                   
+     Student                                                                
+     ====================================================================== -->
+<project name="ant1" default="jar">
+	<property name="build.dir" value="build" />
+	<property name="class.dir" value="${build.dir}/classes" />
+	<property name="jar.dir" value="${build.dir}/jar" />
+	<property name="src.dir" value="src" />
+	<property name="doc.dir" value="${build.dir}/doc" />
+	<property name="main.class" value="app.HelloAnt" />
+
+	<target name="clean">
+		<echo>clean...</echo>
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="compile" depends="clean">
+		<echo>compile...</echo>
+		<mkdir dir="${class.dir}" />
+		<javac srcdir="${src.dir}" destdir="${class.dir}" includeantruntime="false" />
+		<!-- Comments -->
+	</target>
+
+	<target name="jar" depends="compile">
+		<echo>jar...</echo>
+		<jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${class.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="${main.class}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="doc" depends="clean">
+		<javadoc destdir="${doc.dir}" sourcepath="${src.dir}"  />
+	</target>
+	
+	<target name="run">
+		<java jar="build/jar/ant1.jar" fork="true"/>
+	</target>	
+</project>

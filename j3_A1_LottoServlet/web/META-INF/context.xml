@@ -1,0 +1,14 @@
+<!--  doppelt antiJARLocking -->
+<!--  
+<Context antiJARLocking="true" antiResourceLocking="true">
+
+    
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+	
+</Context>
+
+-->
+
+<Context  antiResourceLocking="true">
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+</Context>

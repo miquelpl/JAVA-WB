@@ -1,0 +1,57 @@
+<?xml version="1.0"  ?>
+<project name="ServletTest" default="deploy">
+	<property name="project" value="${ant.project.name}" />
+	<property file="build.properties" />
+	<property name="build.dir" value="build" />
+	<property name="class.dir" value="${build.dir}/classes" />
+	<property name="src.dir" value="src" />
+	<property name="lib.dir" value="web/WEB-INF/lib" />
+	<property name="dist.dir" value="dist" />
+	<property name="web.dir" value="web" />
+	<property name="webapp" value="dist" />
+	<!-- relative Pfade zum workspace müssen mit location="${basedir}... angegeben werden -->
+	<property name="tomcat.local" location="C:/Program Files/${tomcat}" />
+
+	<path id="compile.classpath">
+		 <fileset dir="${lib.dir}"><!-- alle  jar's aufnehmen -->
+		 	<include name="*.jar"/>
+		 </fileset>
+		 <!--pathelement location="${tomcat.local}/lib/servlet-api.jar"/-->
+	</path>
+
+	<!-- erst löschen, dann init-->
+	<target name="init" depends="clean">
+		<mkdir dir="${class.dir}" />
+		<mkdir dir="${dist.dir}" />
+	</target>
+
+	<target name="compile" depends="init">
+		<javac destdir="${class.dir}" debug="true" srcdir="${src.dir}">
+			<classpath refid="compile.classpath" />
+		</javac>
+	</target>
+
+	<target name="war" depends="compile">
+		<war destfile="dist/${project}.war" webxml="${web.dir}/WEB-INF/web.xml">
+			<fileset dir="${web.dir}" />
+			<lib dir="${lib.dir}" />
+			<classes dir="${class.dir}" />
+		</war>
+	</target>
+
+	<target name="deploy" depends="war">
+		<copy todir="${tomcat.local}/webapps/">
+			<fileset dir="${webapp}" />
+		</copy>
+	</target>
+
+	<target name="clean">
+		<delete dir="${dist.dir}" />
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="undeploy">
+		<delete file="${tomcat.local}/webapps/${project}.war" />
+		<delete dir="${tomcat.local}/webapps/${project}" />
+	</target>
+</project>
