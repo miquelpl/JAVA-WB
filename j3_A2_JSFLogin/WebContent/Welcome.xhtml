@@ -15,20 +15,26 @@
 	</style>
 </h:head>
 <h:body>
-<h2>JSF Welcome</h2>
-
-<div id="userNameDiv" class="textPlacement">
-User: <h:outputText value="#{loginBean.username}" />
-</div>
-
-<div id="dataTableDiv" class="textPlacement">
-<h:dataTable var="name" value="#{loginBean.listNamen}" border="1">
-<h:column>
-<h:outputText value="#{name}" />
-</h:column>
-</h:dataTable>
-</div>
-
+	<h2>JSF Welcome</h2>
+	
+	<div id="userNameDiv" class="textPlacement">
+		User: <h:outputText value="#{loginBean.username}" />
+	</div>
+	
+	<div id="dataTableDiv" class="textPlacement">
+		<h:dataTable var="name" value="#{loginBean.listNamen}" border="1">
+<f:facet name="header">Username</f:facet>
+			<h:column>
+				<h:outputText value="#{name}" />
+			</h:column>
+		</h:dataTable>
+	</div>
+	<div id="buttonDiv" class="textPlacement">
+		<h:form>
+			<h:commandButton action="Login" value="Zurück"/>
+		</h:form>
+	</div>
+	
 </h:body>
 
 </html>

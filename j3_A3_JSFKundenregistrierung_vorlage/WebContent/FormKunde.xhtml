@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+<h:head>
+<title>Form Kunde</title>
+</h:head>
+<h:body>
+	<h2>Form Kunde</h2>
+<h:form id="kundeform">
+<h:panelGrid columns="3">
+<h:outputLabel value="Vorname" for="vorname"/>
+<h:inputText id="vorname" value="#{kundeBean.kunde.vorname}" required="true">
+<f:validateLength minimum="2" maximum="20"/>
+</h:inputText>
+<h:message for="vorname" />
+
+<h:outputLabel value="Nachname" for="nachname"/>
+<h:inputText id="nachname" value="#{kundeBean.kunde.nachname}" required="true">
+<f:validateLength minimum="2" maximum="20"/>
+</h:inputText>
+<h:message for="nachname" />
+
+<h:outputLabel value="E-Mail" for="email"/>
+<h:inputText id="email" value="#{kundeBean.kunde.email}" required="true">
+<f:validator validatorId="validators.EMailValidator"/>
+</h:inputText>
+<h:message for="email" />
+
+<h:outputLabel value="User Name" for="username"/>
+<h:inputText id="username" value="#{kundeBean.kunde.username}" required="true">
+<f:validateLength minimum="2" maximum="20"/>
+</h:inputText>
+<h:message for="username" />
+
+<h:outputLabel value="Passwort" for="passwort"/>
+<h:inputSecret id="passwort" value="#{kundeBean.kunde.passwort}" required="true">
+<!-- <f:validateRegex pattern="((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})" /> -->
+</h:inputSecret>
+<h:message for="username" />
+
+</h:panelGrid>
+
+<h:commandButton value="Los" action="#{kundeBean.storeNewKunde}" />
+
+</h:form>
+
+</h:body>
+</html>
