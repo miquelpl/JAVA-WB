@@ -23,7 +23,6 @@
         <h:outputText value="South unit content." />
     </p:layoutUnit>
  
-<!-- --------------------------------------------------------------------------------------------------------------------------- -->
 
 <p:layoutUnit id="west" position="west" size="300" header="Left" resizable="true" closable="false" collapsible="true">
 
@@ -37,11 +36,14 @@
 <p:dataTable 
 	id="direcciones" 
 	var="adressen" 
-	widgetVar="adresseTable" multiViewState="true"
+	widgetVar="adresseTable" 
+	multiViewState="true"
 	value="#{mapsBean.listAdresse}"
-	selectionMode="single" selection="#{mapsBean.selectedAdresse}" rowKey="#{adressen.adresse}">
+	selectionMode="single" 
+	selection="#{mapsBean.selectedAdresse}" 
+	rowKey="#{adressen.adresse}">
 
-<p:ajax event="rowSelect" update=":formAdresse:carDetail" oncomplete="alert('#{mapsBean.selectedAdresse.adresse}')" />
+<p:ajax event="rowSelect" listener="#{mapsBean.onRowSelect}" update=":gmap" oncomplete="alert('#{mapsBean.selectedAdresse.adresse}')" />
 
 	<p:column headerText="Adr">
 		<h:outputText value="#{adressen.adresse}" />
@@ -54,7 +56,7 @@
 
 <p:dialog header="Adresse Info" widgetVar="carDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
 <p:outputPanel id="carDetail" style="text-align:center;">
-<p:panelGrid  columns="2" rendered="#{not empty mapsBean.selectedAdresse}" columnClasses="label,value">
+<p:panelGrid  columns="2" rendered="true" columnClasses="label,value">
     <h:outputText value="Adresse" />
     <h:outputText value="#{mapsBean.selectedAdresse.adresse}" />
 
@@ -68,7 +70,8 @@
 
 </p:layoutUnit>
  
-<!-- --------------------------------------------------------------------------------------------------------------------------- -->
+
+
 
     <p:layoutUnit position="east" size="200" header="Right" resizable="true" closable="false" collapsible="true" effect="drop">
         <h:outputText value="Right unit content." />
