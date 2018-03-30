@@ -23,34 +23,61 @@
         <h:outputText value="South unit content." />
     </p:layoutUnit>
  
-    <p:layoutUnit id="west" position="west" size="300" header="Left" resizable="true" closable="false" collapsible="true">
 
-<h:form id="form">  
+
+<p:layoutUnit id="west" position="west" size="300" header="Left" resizable="true" closable="false" collapsible="true">
+
+<h:form id="formSelect">  
 <p:inputText id="adresse" value="#{mapsBean.adresse}" required="true" size="28" placeholder="In Google Maps suchen" />
-<p:commandButton value="Suchen" icon="ui-icon-check" action="#{mapsBean.adresseSuchen}" update="adressenList geometryList" />
+<p:commandButton value="Suchen" icon="ui-icon-check" action="#{mapsBean.adresseSuchen}" update="formAdresse:direcciones"/>
 </h:form>
 
-<p:dataList id="adressenList" value="#{mapsBean.listResult}" binding="#{mapsBean.dataList}" var="adr" type="ordered">
-<f:facet name="header">
-Adressen
-</f:facet>
-<h:outputText id="adr-item" value="#{adr}" />
-</p:dataList>
-    
-<p:dataList id="geometryList" value="#{mapsBean.listGeometry}" var="geom" type="ordered">
-<f:facet name="header">Geo</f:facet>
-<!-- <h:outputLink id="geom-item" value="#{geom}">#{geom}</h:outputLink> -->
-<h:outputLink id="geom-item" value="#{mapsBean.result}">
-<f:ajax execute="geom-item" render=":gmap" />
-#{geom}
-</h:outputLink>
-</p:dataList>
+
+<h:form id="formAdresse">  
+<p:dataTable 
+	id="direcciones" 
+	var="adressen" 
+	value="#{mapsBean.listAdresse}"
+	binding="#{mapsBean.dataTable}" 
+	selectionMode="single" selection="#{mapsBean.selectedAdresse}" >
+
+<p:ajax event="rowSelect" oncomplete="PF('carDialog').show()" />
+
+	<p:column headerText="Adr">
+		<h:outputText value="#{adressen.adresse}" />
+	</p:column>
+
+	<p:column headerText="Loc">
+		<h:outputText value="#{adressen.position}" />
+	</p:column>
+
+</p:dataTable>
+
+<p:dialog header="Adresse Info" widgetVar="carDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+<p:outputPanel id="carDetail" style="text-align:center;">
+<p:panelGrid  columns="2" rendered="#{not empty dtTableStateView.selectedCar}" columnClasses="label,value">
+    <h:outputText value="Adresse" />
+    <h:outputText value="#{mapsBean.selectedAdresse.adresse}" />
+
+    <h:outputText value="Position" />
+    <h:outputText value="#{mapsBean.selectedAdresse.position}" />
+</p:panelGrid>
+</p:outputPanel>
+</p:dialog>
 
 
 
+</h:form>
 
-    </p:layoutUnit>
+</p:layoutUnit>
  
+
+
+
+
+
+
+
     <p:layoutUnit position="east" size="200" header="Right" resizable="true" closable="false" collapsible="true" effect="drop">
         <h:outputText value="Right unit content." />
     </p:layoutUnit>
