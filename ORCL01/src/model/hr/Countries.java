@@ -78,4 +78,9 @@ public class Countries implements java.io.Serializable {
 		this.locationses = locationses;
 	}
 
+	@Override
+	public String toString() {
+		return "Countries [countryId=" + countryId + ", regions=" + regions + ", countryName=" + countryName + "]";
+	}
+
 }
