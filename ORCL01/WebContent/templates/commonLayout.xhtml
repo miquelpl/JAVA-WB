@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" 
+	xmlns:p="http://primefaces.org/ui" >
+	
+<h:head>
+</h:head>
+   
+<h:body>
+
+<p:layout fullPage="true">
+ 
+<p:layoutUnit position="north" size="60" header="Menu" resizable="false" closable="false" collapsible="true">
+<ui:insert name="north" >
+<ui:include src="/templates/menuLayout.xhtml" />
+</ui:insert>
+</p:layoutUnit>
+ 
+    <p:layoutUnit position="south" size="100" header="Bottom" resizable="true" closable="false" collapsible="true">
+        <h:outputText value="South unit content." />
+    </p:layoutUnit>
+ 
+
+<p:layoutUnit id="west" position="west" size="200" header="Schema Browser" resizable="true" closable="false" collapsible="true">
+<ui:insert name="west" >
+<ui:include src="/templates/schemaBrowserLayout.xhtml" />
+</ui:insert>
+</p:layoutUnit>
+
+    <p:layoutUnit position="east" size="200" header="Right" resizable="true" closable="false" collapsible="true" effect="drop">
+        <h:outputText value="Right unit content." />
+    </p:layoutUnit>
+ 
+<p:layoutUnit id="center" position="center">
+<ui:insert name="center" >
+<ui:include src="/templates/centralLayout.xhtml" />
+</ui:insert>
+</p:layoutUnit>
+ 
+</p:layout>
+
+</h:body>
+
+</html>

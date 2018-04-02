@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" 
+	xmlns:p="http://primefaces.org/ui" >
+	
+<h:head>
+</h:head>
+<h:body>
+
+<ui:composition>
+
+<h:form id="formEmployees">  
+<p:dataTable 
+	id="employees" 
+	var="employees" 
+	widgetVar="employeesTable" 
+	multiViewState="true"
+	value="#{employeesBean.listEmployees}" >
+
+<p:column headerText="EMPLOYEE_ID">
+<h:outputText value="#{employees.employeeId}" />
+</p:column>
+
+<p:column headerText="FIRST_NAME">
+<h:outputText value="#{employees.firstName}" />
+</p:column>
+
+<p:column headerText="LAST_NAME">
+<h:outputText value="#{employees.lastName}" />
+</p:column>
+
+<p:column headerText="EMAIL">
+<h:outputText value="#{employees.email}" />
+</p:column>
+
+<p:column headerText="PHONE_NUMBER">
+<h:outputText value="#{employees.phoneNumber}" />
+</p:column>
+
+<p:column headerText="HIRE_DATE">
+<h:outputText value="#{employees.hireDate}" />
+</p:column>
+
+<p:column headerText="SALARY">
+<h:outputText value="#{employees.salary}" />
+</p:column>
+
+<p:column headerText="COMMISSION_PCT">
+<h:outputText value="#{employees.commissionPct}" />
+</p:column>
+
+</p:dataTable>
+</h:form>
+
+</ui:composition>
+
+</h:body>
+</html>
