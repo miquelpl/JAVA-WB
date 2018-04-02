@@ -14,7 +14,9 @@
 <ui:composition>
 
 <h:form id="genericTable">
-<p:dataTable var="table" value="#{genericTableBean.table}">
+<h:outputText value="#{genericTableBean.select}" rendered="false" />
+<h:outputText value="#{genericTableBean.className}" rendered="false" />
+<p:dataTable id="dataTabelle" var="table" value="#{genericTableBean.table}">
 <p:columns value="#{genericTableBean.columns}" var="column" >
 <f:facet name="header">
 #{column.header}

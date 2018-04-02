@@ -12,10 +12,12 @@
 <h:body>
 
 <ui:composition>
-<h:form>
+<h:form id="schemaBrowser">
     <p:growl id="messages" showDetail="true" />
  
     <p:tree id="docs" value="#{treeContextMenuView.root}" var="doc" selectionMode="single" selection="#{treeContextMenuView.selectedNode}" dynamic="true">                    
+
+
         <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
             <h:outputText value="#{doc}"/>
         </p:treeNode>
