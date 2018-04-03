@@ -16,6 +16,14 @@ public class GenericDAO {
 		return(q.list());
 	}
 	
+	public List<?> findAll(String className) throws ClassNotFoundException {
+		String select = "SELECT * FROM " + className.toUpperCase();
+		Class<?> klasse = Class.forName("model.hr."+className);
+		session = HibernateUtil.getSessionFactory().openSession();
+		Query q = session.createSQLQuery(select).addEntity(klasse);
+		return(q.list());
+	}
+	
 	public static void main(String[] args) {
 		String dml = "SELECT * FROM COUNTRIES";
 		GenericDAO dao = new GenericDAO();

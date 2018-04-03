@@ -23,16 +23,17 @@ public class GenericTableBean {
 	private String className;
 
 	public GenericTableBean() {
-		this.select = "SELECT * FROM EMPLOYEES";
-		this.className = "model.hr.Employees";
-		populateColumns();
+		this.className = "Employees";
 	}
 
 	@PostConstruct
     public void init() {
+		populateColumns();
+System.out.println("init className: " + className);	
+columns.stream().forEach(e->System.out.println(e.getHeader()));
 		GenericDAO dao = new GenericDAO();
 		try {
-			setTable(dao.findAll(this.select, Class.forName(className)));
+			setTable(dao.findAll(className));
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -61,10 +62,26 @@ public class GenericTableBean {
 	}
 	public void setClassName(String className) {
 		this.className = className;
+		System.out.println(className);
 	}
 
 	public void populateColumns() {
-		String[] columnKeys = new String[] { "employeeId", "firstName", "lastName", "email", "phoneNumber", "hireDate", "salary", "commissionPct" };
+		String[] columnKeys = null;
+		columns.clear();
+		switch(this.className) {
+			case "Employees":
+				columnKeys = new String[] { "employeeId", "firstName", "lastName", "email", "phoneNumber", "hireDate", "salary", "commissionPct" };
+				break;
+			case "Countries":
+				System.out.println("populateColumns " + className);
+				columnKeys = new String[] { "countryId", "countryName", "regions"};
+				break;
+			case "Jobs":
+				break;
+			case "":
+				break;
+			default:
+		}
 		for (String columnKey : columnKeys) {
 			columns.add(new ColumnModel(columnKey.toUpperCase(), columnKey));
 		}
