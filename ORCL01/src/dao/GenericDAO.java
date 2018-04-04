@@ -10,13 +10,15 @@ public class GenericDAO {
 
 	private Session session = null;
 	
-	public List<?> findAll(String select, Class<?> klasse) {
+	@SuppressWarnings("unchecked")
+	public List<Class<?>> findAll(String select, Class<?> klasse) {
 		session = HibernateUtil.getSessionFactory().openSession();
 		Query q = session.createSQLQuery(select).addEntity(klasse);
 		return(q.list());
 	}
 	
-	public List<?> findAll(String className) throws ClassNotFoundException {
+	@SuppressWarnings("unchecked")
+	public List<Class<?>> findAll(String className) throws ClassNotFoundException {
 		String select = "SELECT * FROM " + className.toUpperCase();
 		Class<?> klasse = Class.forName("model.hr."+className);
 		session = HibernateUtil.getSessionFactory().openSession();

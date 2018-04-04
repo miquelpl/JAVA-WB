@@ -2,47 +2,57 @@ package beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 import org.primefaces.event.SelectEvent;
-
 import dao.GenericDAO;
-import model.hr.Employees;
 
 @ViewScoped
 @ManagedBean
 public class GenericTableBean {
 
 	private List<ColumnModel> columns = new ArrayList<ColumnModel>();
-	private List<?> table;
-	private String select;
+	private List<Class<?>> table;
 	private String className;
+	private Class<?> selectedRow;
 
+	private static final Map<String, String> tableToClass = new HashMap<String, String>();
+	static {
+		tableToClass.put("COUNTRIES", "Countries");
+		tableToClass.put("DEPARTMENTS", "Departments");
+		tableToClass.put("EMPLOYEES", "Employees");
+		tableToClass.put("JOBS", "Jobs");
+		tableToClass.put("LOCATIONS", "Locations");
+		tableToClass.put("REGIONS", "Regions");
+	}
+	
 	public GenericTableBean() {
-		this.className = "Employees";
+		this.className = "EMPLOYEES";
 	}
 
 	@PostConstruct
     public void init() {
-		populateColumns();
-System.out.println("init className: " + className);	
-columns.stream().forEach(e->System.out.println(e.getHeader()));
 		GenericDAO dao = new GenericDAO();
 		try {
-			setTable(dao.findAll(className));
+			setTable(dao.findAll(tableToClass.get(className)));
+			populateColumns();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
     }
 
-	public List<?> getTable() {
+	public List<Class<?>> getTable() {
 		return table;
 	}
-	public void setTable(List<?> table) {
+	public void setTable(List<Class<?>> table) {
 		this.table = table;
 	}
 	public List<ColumnModel> getColumns() {
@@ -50,12 +60,6 @@ columns.stream().forEach(e->System.out.println(e.getHeader()));
 	}
 	public void setColumns(List<ColumnModel> columns) {
 		this.columns = columns;
-	}
-	public String getSelect() {
-		return select;
-	}
-	public void setSelect(String select) {
-		this.select = select;
 	}
 	public String getClassName() {
 		return className;
@@ -68,17 +72,24 @@ columns.stream().forEach(e->System.out.println(e.getHeader()));
 	public void populateColumns() {
 		String[] columnKeys = null;
 		columns.clear();
-		switch(this.className) {
-			case "Employees":
-				columnKeys = new String[] { "employeeId", "firstName", "lastName", "email", "phoneNumber", "hireDate", "salary", "commissionPct" };
-				break;
+		switch(tableToClass.get(this.className)) {
 			case "Countries":
-				System.out.println("populateColumns " + className);
-				columnKeys = new String[] { "countryId", "countryName", "regions"};
+				columnKeys = new String[] {"countryId", "countryName"};
+				break;
+			case "Departments":
+				columnKeys = new String[] {"departmentId", "departmentName"};
+				break;
+			case "Employees":
+				columnKeys = new String[] {"employeeId", "firstName", "lastName", "email", "phoneNumber", "hireDate", "salary", "commissionPct" };
 				break;
 			case "Jobs":
+				columnKeys = new String[] {"jobId", "jobTitle", "minSalary", "maxSalary"};
 				break;
-			case "":
+			case "Locations":
+				columnKeys = new String[] {"locationId", "streetAddress", "postalCode", "city", "stateProvince"};
+				break;
+			case "Regions":
+				columnKeys = new String[] {"regionId", "regionName"};
 				break;
 			default:
 		}
@@ -87,13 +98,20 @@ columns.stream().forEach(e->System.out.println(e.getHeader()));
 		}
 	}
 
+	public Class<?> getSelectedRow() {
+		return selectedRow;
+	}
+	public void setSelectedRow(Class<?> selectedRow) {
+		System.out.println("setSelectedRow: " + selectedRow.getName());
+		this.selectedRow = (Class<?>)selectedRow;
+	}
 	public void onRowSelect(SelectEvent event) {
-//		event.getComponent().getAttributes().
-		select = "SELECT * FROM EMPLOYEES";
-		className = "Employees";
+		Class<?> selected = (Class<?>) event.getObject();
+		System.out.println("Row Selected: ");
+		FacesMessage msg = new FacesMessage("Row Selected", "Roww");
+		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 
-	// getters and setters
 	static public class ColumnModel implements Serializable {
 		private static final long serialVersionUID = 1L;
 		private String header;

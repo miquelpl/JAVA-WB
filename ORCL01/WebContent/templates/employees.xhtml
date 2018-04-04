@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" 
+	xmlns:p="http://primefaces.org/ui" >
+	
+<h:head>
+</h:head>
+<h:body>
+
+<ui:composition>
+
+<h:form id="genericTable">
+<p:growl id="msgs" showDetail="true" />
+<p:dataTable 
+	id="dataTabelle" 
+	var="employees" 
+	value="#{employeesBean.listEmployees}" 
+	selection="#{employeesBean.selectedRow}" 
+	rowKey="#{employees.employeeId}" 
+	selectionMode="single">
+
+<f:facet name="header">Employees</f:facet>
+
+<p:column headerText="EMPLOYEE_ID">
+<h:outputText value="#{employees.employeeId}" />
+</p:column>
+
+<p:column headerText="FIRST_NAME">
+<h:outputText value="#{employees.firstName}" />
+</p:column>
+
+<p:column headerText="LAST_NAME">
+<h:outputText value="#{employees.lastName}" />
+</p:column>
+
+<p:column headerText="EMAIL">
+<h:outputText value="#{employees.email}" />
+</p:column>
+
+<p:column headerText="PHONE_NUMBER">
+<h:outputText value="#{employees.phoneNumber}" />
+</p:column>
+
+<p:column headerText="HIRE_DATE">
+<h:outputText value="#{employees.hireDate}" converter="LocalDateConverter"/>
+</p:column>
+
+<p:column headerText="MANAGER_ID">
+<h:outputText value="#{employees.employees.employeeId}" />
+</p:column>
+
+<p:column headerText="DEPARTMENT_ID">
+<h:outputText value="#{employees.departments.departmentId}" />
+</p:column>
+
+<p:column headerText="JOB_ID">
+<h:outputText value="#{employees.jobs.jobId}" />
+</p:column>
+
+<p:column headerText="SALARY">
+<h:outputText value="#{employees.salary}" />
+</p:column>
+
+<p:column headerText="COMMISSION_PCT">
+<h:outputText value="#{employees.commissionPct}" />
+</p:column>
+
+</p:dataTable>
+
+<p:contextMenu for="dataTabelle">
+<p:menuitem value="View" update="rowDetail" icon="ui-icon-search" oncomplete="PF('rowDialog').show()"/>
+</p:contextMenu>
+
+<p:dialog 
+	header="Employee Info" 
+	widgetVar="rowDialog" 
+	showEffect="fade" 
+	hideEffect="fade" 
+	closeOnEscape="true"
+	resizable="false">
+
+<p:outputPanel id="rowDetail" style="text-align:left;">
+<p:panelGrid columns="2" rendered="#{not empty employeesBean.selectedRow}" columnClasses="label,value">
+<f:facet name="header">
+<p:outputLabel value="Employee" />
+</f:facet>
+<h:outputText value="Id" />
+<h:outputText value="#{employeesBean.selectedRow.employeeId}" />
+<h:outputText value="First Name" />
+<h:outputText value="#{employeesBean.selectedRow.firstName}" />
+<h:outputText value="Last Name" />
+<h:outputText value="#{employeesBean.selectedRow.lastName}" />
+<h:outputText value="E-Mail" />
+<h:outputText value="#{employeesBean.selectedRow.email}" />
+<h:outputText value="Phone" />
+<h:outputText value="#{employeesBean.selectedRow.phoneNumber}" />
+<h:outputText value="Hire Date" />
+<h:outputText value="#{employeesBean.selectedRow.hireDate}" />
+<h:outputText value="Manager Id" />
+<h:outputText value="#{employeesBean.selectedRow.employees.employeeId}" />
+</p:panelGrid>
+</p:outputPanel>
+</p:dialog>
+</h:form>
+
+</ui:composition>
+
+</h:body>
+</html>

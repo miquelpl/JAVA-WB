@@ -51,15 +51,13 @@ public class ContextMenuView implements Serializable {
         if(selectedNode != null) {
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Selected", selectedNode.getData().toString());
             FacesContext.getCurrentInstance().addMessage(null, message);
-            System.out.println("displaySelectedSingle " + selectedNode.getData().toString());
+            //System.out.println("displaySelectedSingle " + selectedNode.getData().toString());
         }
     }
     public void onNodeSelect(NodeSelectEvent event) {
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Selected", event.getTreeNode().toString());
         FacesContext.getCurrentInstance().addMessage(null, message);
-//        setClassNameGenericTableBean(event.getTreeNode().toString());
-        setClassNameGenericTableBean("Countries");
-        System.out.println("onNodeSelect " + event.getTreeNode().toString());
+        setClassNameGenericTableBean(event.getTreeNode().toString());
     }      
 
     public GenericTableBean getGenericTableBean() {

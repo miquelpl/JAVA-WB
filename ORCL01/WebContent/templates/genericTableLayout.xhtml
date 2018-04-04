@@ -14,15 +14,50 @@
 <ui:composition>
 
 <h:form id="genericTable">
-<h:outputText value="#{genericTableBean.className}" rendered="false" />
-<p:dataTable id="dataTabelle" var="table" value="#{genericTableBean.table}">
+<p:growl id="msgs" showDetail="true" />
+<p:dataTable 
+	id="dataTabelle" 
+	var="table" 
+	value="#{genericTableBean.table}" 
+	selection="#{genericTableBean.selectedRow}" 
+	rowKey="#{genericTableBean.columns[0].property}" 
+	selectionMode="single">
+
+
+
 <p:columns value="#{genericTableBean.columns}" var="column" >
 <f:facet name="header">
 #{column.header}
 </f:facet>
-<h:outputText value="#{table[column.property]}" />
+<p:outputLabel value="#{table[column.property]}" />
 </p:columns>
 </p:dataTable>
+
+<p:contextMenu for="dataTabelle">
+<p:menuitem value="View" update="rowDetail" icon="ui-icon-search" oncomplete="PF('rowDialog').show()"/>
+</p:contextMenu>
+
+<p:dialog 
+	header="#{genericTableBean.className} Info" 
+	widgetVar="rowDialog" 
+	modal="true" 
+	showEffect="fade" 
+	hideEffect="fade" 
+	resizable="false">
+
+<p:outputPanel id="rowDetail" style="text-align:center;">
+<p:panelGrid  columns="2" columnClasses="label,value">
+<f:facet name="header">
+<p:outputLabel value="#{genericTableBean.className}" />
+</f:facet>
+<h:outputText value="First Name" />
+<h:outputText value="#{genericTableBean.selectedRow.firstName}" />
+<h:outputText value="Last Name" />
+<h:outputText value="#{genericTableBean.selectedRow.lastName}" />
+</p:panelGrid>
+</p:outputPanel>
+</p:dialog>
+
 </h:form>
 
 </ui:composition>
